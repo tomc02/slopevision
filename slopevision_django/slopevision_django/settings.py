@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'rest_api',
     'leaflet',
+    'drf_spectacular',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +133,10 @@ LEAFLET_CONFIG = {
     'DEFAULT_TILE_LAYER_ATTR': 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     'DEFAULT_CENTER': (49.437315, 18.78643),  # Latitude and longitude of the center of the map
     'DEFAULT_ZOOM': 11,  # Default zoom level
+}
+
+# DRF Spectacular Settings
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
 }
