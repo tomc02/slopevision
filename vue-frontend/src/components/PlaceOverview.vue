@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-gray-200 min-h-fit py-8">
+  <div class="bg-gray-200 dark:bg-gray-900 dark:text-gray-100 min-h-fit py-8">
     <div class="container mx-auto px-4">
       <!-- Page Title -->
-      <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+      <h1 class="text-3xl font-bold mb-8 text-center">
         Places Overview
       </h1>
     </div>
