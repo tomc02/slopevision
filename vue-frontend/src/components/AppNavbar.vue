@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import { useRoute } from "vue-router";
 
 // Import Heroicons components
@@ -116,6 +116,16 @@ export default {
     const darkMode = ref(false);
     const route = useRoute();
 
+   onMounted(() => {
+      const savedMode = localStorage.getItem("darkMode");
+      if (savedMode) {
+        darkMode.value = JSON.parse(savedMode);
+        if (darkMode.value) {
+          document.documentElement.classList.add("dark");
+        }
+      }
+    });
+
     const toggleMenu = () => {
       menuOpen.value = !menuOpen.value;
     };
@@ -135,6 +145,7 @@ export default {
       } else {
         document.documentElement.classList.remove("dark");
       }
+      localStorage.setItem("darkMode", JSON.stringify(darkMode.value));
     };
 
     return {
