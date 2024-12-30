@@ -6,4 +6,5 @@ Pillow
 django-cors-headers
 leaflet
 drf_spectacular
-
+django-leaflet
+gunicorn
