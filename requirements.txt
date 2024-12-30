@@ -5,3 +5,5 @@ djangorestframework
 Pillow
 django-cors-headers
 leaflet
+drf_spectacular
+
