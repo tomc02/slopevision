@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon for Django project
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory={{ django_project_root }}
+ExecStart={{ venv_path }}/bin/gunicorn --workers 3 --bind unix:{{ gunicorn_socket }} {{ django_wsgi_module }}:application
+
+[Install]
+WantedBy=multi-user.target

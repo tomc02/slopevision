@@ -1,0 +1,122 @@
+- hosts: django_server
+  become: yes
+  vars:
+    project_root: "{{ lookup('env', 'SERVER_PROJECT_ROOT') | default('/tmp/slopevision') }}"
+    django_project_root: "{{ project_root }}/slopevision_django"
+    vue_project_root: "{{ project_root }}/vue-frontend"
+    venv_path: "{{ project_root }}/venv"
+    static_root: "{{ project_root }}/staticfiles"
+    media_root: "{{ django_project_root }}/media"
+    gunicorn_socket: "/run/gunicorn.sock"
+    django_wsgi_module: "slopevision_django.wsgi"
+    server_name: "{{ lookup('env', 'DJANGO_SERVER_IP') | default('127.0.0.1') }}"
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install required system packages
+      apt:
+        name: 
+          - python3
+          - python3-pip
+          - python3-venv
+          - nginx
+          - nodejs
+          - npm
+          - gdal-bin
+          - libgdal-dev
+        state: present
+
+    - name: Create Python virtual environment
+      ansible.builtin.shell: python3 -m venv {{ venv_path }}
+      args:
+        creates: "{{ venv_path }}"
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ project_root }}/requirements.txt"
+        virtualenv: "{{ venv_path }}"
+      
+    - name: Install VUE cli
+      npm:
+        name: "@vue/cli"
+        global: yes
+
+    - name: Install Vue frontend dependencies
+      command: npm install
+      args:
+        chdir: "{{ project_root }}"
+
+
+    - name: Build Vue production files
+      command: npm run build-vue
+      args:
+        chdir: "{{ project_root }}"
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+
+
+    - name: Copy Vue build to Nginx
+      copy:
+        src: "{{ vue_project_root }}/dist/"
+        dest: /var/www/vue-frontend
+        owner: www-data
+        group: www-data
+        mode: "0755"
+        remote_src: yes
+
+    - name: Collect Django static files
+      django_manage:
+        command: collectstatic --noinput
+        app_path: "{{ django_project_root }}"
+        virtualenv: "{{ venv_path }}"
+    
+    - name: Set correct ownership for /run directory
+      ansible.builtin.file:
+        path: /run
+        owner: root
+        group: www-data
+        mode: "0775"
+        state: directory
+
+    - name: Configure Gunicorn service
+      template:
+        src: templates/gunicorn.service.j2
+        dest: /etc/systemd/system/gunicorn.service
+      notify:
+        - Restart gunicorn
+
+    - name: Configure Nginx for Django and Vue
+      template:
+        src: templates/nginx-django.conf.j2
+        dest: /etc/nginx/sites-available/slopevision
+      notify:
+        - Restart nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/slopevision
+        dest: /etc/nginx/sites-enabled/slopevision
+        state: link
+      notify:
+        - Restart nginx
+
+    - name: Ensure Gunicorn is enabled and running
+      systemd:
+        name: gunicorn
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Restart gunicorn
+      service:
+        name: gunicorn
+        state: restarted
