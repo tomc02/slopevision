@@ -58,10 +58,27 @@ sudo chmod 600 /home/ansible_user/.ssh/authorized_keys
 # Set ownership of the .ssh directory and files to 'ansible_user'
 sudo chown -R ansible_user:ansible_user /home/ansible_user/.ssh
 
+# Install Google Chrome
+echo "\nInstalling Google Chrome..."
+
+# Download the Google Chrome .deb package
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+# Install the package using dpkg
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+# Fix broken dependencies if necessary
+sudo apt --fix-broken install -y
+
+# Remove the .deb file to clean up
+echo "Removing Google Chrome installer..."
+rm google-chrome-stable_current_amd64.deb
+
 # Print completion message
 echo "\nNode.js version $NODE_VERSION installed and set as default."
 echo "'ansible_user' has been created with sudo privileges and the specified temporary password."
 echo "Passwordless sudo has been enabled for 'ansible_user'."
+echo "Google Chrome has been installed successfully."
 echo "You can now use 'ssh-copy-id' to copy SSH keys for 'ansible_user'."
 echo "Remember to delete or disable the password after setup."
 
