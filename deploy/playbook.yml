@@ -5,7 +5,7 @@
     django_project_root: "{{ project_root }}/slopevision_django"
     vue_project_root: "{{ project_root }}/vue-frontend"
     venv_path: "{{ project_root }}/venv"
-    static_root: "{{ project_root }}/staticfiles"
+    static_root: "{{ django_project_root }}/staticfiles"
     media_root: "{{ django_project_root }}/media"
     gunicorn_socket: "/run/gunicorn.sock"
     django_wsgi_module: "slopevision_django.wsgi"
