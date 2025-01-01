@@ -119,10 +119,7 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'slopevision_django', 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server

@@ -164,3 +164,4 @@ slopevision_django/rest_api/migrations/
 node_modules/
 deploy/inventory.ini
 slopevision_django/media
+slopevision_django/static/
