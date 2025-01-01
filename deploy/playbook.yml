@@ -1,7 +1,7 @@
 - hosts: django_server
   become: yes
   vars:
-    project_root: "{{ lookup('env', 'SERVER_PROJECT_ROOT') | default('/tmp/slopevision') }}"
+    project_root: "{{ lookup('env', 'SERVER_PROJECT_ROOT') | default('/slopevision') }}"
     django_project_root: "{{ project_root }}/slopevision_django"
     vue_project_root: "{{ project_root }}/vue-frontend"
     venv_path: "{{ project_root }}/venv"
@@ -28,6 +28,9 @@
           - npm
           - gdal-bin
           - libgdal-dev
+          - libspatialite7
+          - libsqlite3-mod-spatialite
+          - ffmpeg
         state: present
 
     - name: Create Python virtual environment

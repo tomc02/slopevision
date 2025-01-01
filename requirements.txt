@@ -9,3 +9,8 @@ drf_spectacular
 django-leaflet
 gunicorn
 python-dotenv
+requests
+selenium
+opencv-python
+pytz
+bs4
