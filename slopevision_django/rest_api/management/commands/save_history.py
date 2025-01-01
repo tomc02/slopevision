@@ -1,7 +1,7 @@
 from time import sleep
-
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
+from google.cloud import storage
 import os
 import requests
 from urllib.parse import urlparse
@@ -12,9 +12,15 @@ from selenium.webdriver.chrome.options import Options
 from PIL import Image
 from io import BytesIO
 
-
 class Command(BaseCommand):
     help = "Save all active webcams to history based on their current URL."
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Initialize Google Cloud Storage client
+        self.storage_client = storage.Client()
+        self.bucket_name = 'slopevision-dev'  # Replace with your bucket name
+        self.bucket = self.storage_client.bucket(self.bucket_name)
 
     def handle(self, *args, **kwargs):
         active_webcams = Webcam.objects.all()
@@ -40,15 +46,13 @@ class Command(BaseCommand):
                     file_name = f"{webcam.id}_{timestamp}{file_extension}" if file_extension else f"{webcam.id}_{timestamp}"
 
                     if 'image' in content_type:
-                        file_path = f'webcam_images/{file_name}'
-                        self._save_file(response, file_path)
-                        WebcamHistory.objects.create(webcam=webcam, image=file_path)
+                        self._save_file_to_gcs(response, f'webcam_images/{file_name}')
+                        WebcamHistory.objects.create(webcam=webcam, image=file_name)
                         self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     elif 'video' in content_type:
-                        file_path = f'webcam_videos/{file_name}'
-                        self._save_file(response, file_path)
-                        WebcamHistory.objects.create(webcam=webcam, video=file_path)
+                        self._save_file_to_gcs(response, f'webcam_videos/{file_name}')
+                        WebcamHistory.objects.create(webcam=webcam, video=file_name)
                         self.stdout.write(f"Saved video for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     else:
@@ -58,10 +62,9 @@ class Command(BaseCommand):
                         else:
                             ret, frame = cap.read()
                             if ret:
-                                file_path = f'webcam_images/{webcam.id}_{timestamp}.jpg'
-                                full_path = os.path.join('media', file_path)
-                                cv2.imwrite(full_path, frame)
-                                WebcamHistory.objects.create(webcam=webcam, image=file_path)
+                                file_name = f'webcam_images/{webcam.id}_{timestamp}.jpg'
+                                self._save_frame_to_gcs(frame, file_name)
+                                WebcamHistory.objects.create(webcam=webcam, image=file_name)
                                 self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
                             else:
                                 self.stdout.write(f"Failed to capture frame for webcam '{webcam.name}' (ID: {webcam.id}).")
@@ -77,9 +80,7 @@ class Command(BaseCommand):
     def _capture_embed_screenshot(self, webcam, url):
         """Use a headless browser to capture a screenshot of an embedded page."""
         timestamp = now().strftime('%Y%m%d%H%M%S')
-        file_path = f'webcam_images/{webcam.id}_{timestamp}.png'
-        full_path = os.path.join('media', file_path)
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        file_name = f'webcam_images/{webcam.id}_{timestamp}.png'
 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -89,28 +90,30 @@ class Command(BaseCommand):
 
         with webdriver.Chrome(options=chrome_options) as driver:
             driver.get(url)
-            # Wait 15 seconds for the page to load
-            sleep(15)
+            sleep(15)  # Wait for the page to load
             png = driver.get_screenshot_as_png()
 
-            # Save screenshot
-            image = Image.open(BytesIO(png))
-            image.save(full_path, 'PNG')
+            # Save screenshot to Google Cloud Storage
+            self._save_bytes_to_gcs(png, file_name)
 
-        WebcamHistory.objects.create(webcam=webcam, image=file_path)
+        WebcamHistory.objects.create(webcam=webcam, image=file_name)
         self.stdout.write(f"Saved screenshot for embedded webcam '{webcam.name}' (ID: {webcam.id}).")
 
-    def _save_file(self, response, file_path):
-        """Helper method to save streamed content to a file."""
-        full_path = os.path.join('media', file_path)
-        compressed_path = os.path.join('media', 'compressed', file_path)
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-        with open(full_path, 'wb') as file:
-            for chunk in response.iter_content(chunk_size=8192):
-                file.write(chunk)
+    def _save_file_to_gcs(self, response, file_name):
+        """Upload streamed content to Google Cloud Storage."""
+        blob = self.bucket.blob(file_name)
+        blob.upload_from_file(response.raw, content_type=response.headers.get('Content-Type'))
+        self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
 
-        # compress file
-        if '.mp4' in file_path:
-            os.system(f'ffmpeg -i {full_path} -vf "scale=640:-1,fps=10" -c:v libx264 -crf 35 -an {compressed_path}')
-            os.remove(full_path)
-            os.rename(compressed_path, full_path)
+    def _save_frame_to_gcs(self, frame, file_name):
+        """Save a video frame to Google Cloud Storage."""
+        blob = self.bucket.blob(file_name)
+        _, buffer = cv2.imencode('.jpg', frame)
+        blob.upload_from_string(buffer.tobytes(), content_type='image/jpeg')
+        self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
+
+    def _save_bytes_to_gcs(self, content, file_name):
+        """Save raw bytes to Google Cloud Storage."""
+        blob = self.bucket.blob(file_name)
+        blob.upload_from_string(content)
+        self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
