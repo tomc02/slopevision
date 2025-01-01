@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Get environment variables from the .env file
-if [ ! -f ../.env ]; then
+# Check if the environment file exists at the first location
+if [ ! -f ../.env ] && [ ! -f /slopevision/.env ]; then
     echo "Environment file not found!"
     exit 1
 fi
-export $(cat ../.env | xargs)
+
+# Use the first found .env file (prefer ../.env, fall back to /slopevision/.env)
+if [ -f ../.env ]; then
+    ENV_FILE="../.env"
+else
+    ENV_FILE="/slopevision/.env"
+fi
 
 # Path to Django project directory gets from the environment variable
 PROJECT_DIR=$SERVER_PROJECT_ROOT
