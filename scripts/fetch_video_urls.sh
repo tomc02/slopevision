@@ -18,7 +18,7 @@ source "$VENV_DIR/bin/activate" || { echo "Failed to activate virtual environmen
 export PYTHONPATH="$PROJECT_DIR"
 
 # Navigate to the Django project directory
-cd "$PROJECT_DIR/slopevision" || { echo "Project directory not found!"; exit 1; }
+cd "$PROJECT_DIR/slopevision_django" || { echo "Project directory not found!"; exit 1; }
 
 # Run the Django management command
 python manage.py fetch_video_urls
