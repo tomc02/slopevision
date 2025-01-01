@@ -1,0 +1,8 @@
+# Run fetch_hzs_images every 20 minutes from 6:00 AM to 5:00 PM
+*/20 6-17 * * * root xvfb-run -a {{ project_root }}/scripts/fetch_hzs_images.sh >> /var/log/fetch_hzs_images.log 2>&1
+
+# Run fetch_video_urls every 15 minutes from 6:00 AM to 5:00 PM
+*/15 6-17 * * * root {{ project_root }}/scripts/fetch_video_urls.sh >> /var/log/fetch_video_urls.log 2>&1
+
+# Run save_history every hour at minute 2 from 6:00 AM to 4:00 PM
+*/30 6-16 * * * root {{ project_root }}/scripts/save_history.sh >> /var/log/save_history.log 2>&1
