@@ -19,7 +19,7 @@
 
     - name: Install required system packages
       apt:
-        name: 
+        name:
           - python3
           - python3-pip
           - python3-venv
@@ -42,7 +42,7 @@
       pip:
         requirements: "{{ project_root }}/requirements.txt"
         virtualenv: "{{ venv_path }}"
-      
+
     - name: Install VUE cli
       npm:
         name: "@vue/cli"
@@ -76,7 +76,7 @@
         command: collectstatic --noinput
         app_path: "{{ django_project_root }}"
         virtualenv: "{{ venv_path }}"
-    
+
     - name: Set correct ownership for /run directory
       ansible.builtin.file:
         path: /run
@@ -113,6 +113,16 @@
         state: started
         enabled: true
 
+    - name: Create cron job for Django custom commands
+      ansible.builtin.template:
+        src: django_custom_commands.j2
+        dest: /etc/cron.d/django_custom_commands
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Restart cron
+
   handlers:
     - name: Restart nginx
       service:
@@ -122,4 +132,9 @@
     - name: Restart gunicorn
       service:
         name: gunicorn
+        state: restarted
+
+    - name: Restart cron
+      service:
+        name: cron
         state: restarted
