@@ -1,10 +1,10 @@
 <template>
-  <div id="app" class="bg-gray-200 dark:bg-gray-900 dark:text-gray-100 h-screen flex flex-col overflow-hidden">
+  <div id="app" class="bg-gray-200 dark:bg-gray-900 dark:text-gray-100 h-screen flex flex-col">
     <!-- Navbar Component -->
     <Navbar/>
 
     <!-- Main Content Area -->
-    <div class="flex-1 container mx-auto px-4 py-4 overflow-y-auto">
+    <div class="bg-gray-200 dark:bg-gray-900 flex-1 w-full px-4 py-4">
       <!-- Router View for Dynamic Content -->
       <router-view/>
     </div>
@@ -19,7 +19,7 @@
 
 
 <script>
-import Navbar from "./components/AppNavbar.vue"; // Make sure you import your Navbar
+import Navbar from "./components/AppNavbar.vue";
 
 export default {
   name: "App",
