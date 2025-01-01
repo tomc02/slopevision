@@ -12,6 +12,7 @@ if [ -f ../.env ]; then
 else
     ENV_FILE="/slopevision/.env"
 fi
+export $(cat $ENV_FILE | xargs)
 
 # Path to Django project directory gets from the environment variable
 PROJECT_DIR=$SERVER_PROJECT_ROOT
