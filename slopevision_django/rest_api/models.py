@@ -41,7 +41,7 @@ class Webcam(models.Model):
     
     # The URL that corresponds to the webcam source
     # For API and IP Camera, this could be an endpoint or stream URL
-    source_url = models.URLField(max_length=200, blank=True, null=True)
+    source_url = models.URLField(max_length=1000, blank=True, null=True)
     
     # For SCRAPE source, we save the page URL (where to scrape video)
     page_url = models.URLField(max_length=200, blank=True, null=True)

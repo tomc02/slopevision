@@ -63,6 +63,12 @@ class Command(BaseCommand):
                 source_type = 'IPCAM'  # Default to IPCAM, add logic if needed to map to other types
                 source_url = url if url else None
                 page_url = page_url if page_url else None
+                img_page_url = None
+                if page_image_name:
+                    source_type = 'IMG_TAG'
+                    img_page_url = 'https://meteo.hzs.sk/'  # In OLD DB, there was only one source for IMG cams
+                if page_url:
+                    source_type = 'SCRAPE'
 
                 # Create a new Webcam entry
                 webcam = Webcam(
@@ -71,8 +77,8 @@ class Command(BaseCommand):
                     source_type=source_type,
                     source_url=source_url,
                     page_url=page_url,
-                    img_page_url=None,
-                    img_tag_id=None,
+                    img_page_url=img_page_url,
+                    img_tag_id=page_image_name,
                     last_updated=None,
                     history_rate=30,  # Default value
                 )
