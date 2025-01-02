@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from google.oauth2 import service_account
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9f3ag%^#2t@#&j6tf0lw#r(_n-m%-&ii4^-$$8diy&y3-#=u13'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -119,22 +121,40 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 CORS_ALLOW_ALL_ORIGINS = True
-STATIC_URL = '/static/'
+STATIC_URL = '/home/tomas/projects/slopevision/slopevision_django/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server
+# MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    "/home/tomas/projects/slopevision/slopevision_django/slopevision-dev.json"
+)
 
 GS_BUCKET_NAME = 'slopevision-dev'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": GS_BUCKET_NAME,  # Name of the bucket
+            "credentials": GS_CREDENTIALS,  # Credentials for authentication
+        },
+    },
+    "staticfiles": {  # For static files
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "static/",  # Local directory to store static files
+        },
+    },
+}
 
 # Set the URL for accessing the files
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 MEDIA_ROOT = '/media/'
 
 # Optional: Configure the media root if you want to store files in a subfolder
-GS_FILE_OVERWRITE = False
+GS_FILE_OVERWRITE = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
