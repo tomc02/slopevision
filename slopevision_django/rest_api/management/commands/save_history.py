@@ -47,12 +47,12 @@ class Command(BaseCommand):
 
                     if 'image' in content_type:
                         self._save_file_to_gcs(response, f'webcam_images/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, image=file_name)
+                        WebcamHistory.objects.create(webcam=webcam, image=f'webcam_images/{file_name}')
                         self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     elif 'video' in content_type:
                         self._save_file_to_gcs(response, f'webcam_videos/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, video=file_name)
+                        WebcamHistory.objects.create(webcam=webcam, video=f'webcam_videos/{file_name}')
                         self.stdout.write(f"Saved video for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     else:
