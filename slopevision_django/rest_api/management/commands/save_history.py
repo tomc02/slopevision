@@ -1,16 +1,18 @@
+import os
+import subprocess
 from time import sleep
+from urllib.parse import urlparse
+
+import cv2
+import requests
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
 from google.cloud import storage
-import os
-import requests
-from urllib.parse import urlparse
-from rest_api.models import Webcam, WebcamHistory
-import cv2
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from PIL import Image
-from io import BytesIO
+
+from rest_api.models import Webcam, WebcamHistory
+
 
 class Command(BaseCommand):
     help = "Save all active webcams to history based on their current URL."
@@ -51,14 +53,28 @@ class Command(BaseCommand):
                         self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     elif 'video' in content_type:
-                        self._save_file_to_gcs(response, f'webcam_videos/{file_name}')
+                        # Save video locally
+                        local_video_path = f'/tmp/{file_name}'
+                        with open(local_video_path, 'wb') as f:
+                            for chunk in response.iter_content(chunk_size=1024):
+                                if chunk:
+                                    f.write(chunk)
+
+                        # Compress video using ffmpeg
+                        compressed_video_path = f'/tmp/compressed_{file_name}'
+                        self._compress_video(local_video_path, compressed_video_path)
+
+                        # Upload compressed video to Google Cloud Storage
+                        self._save_file_to_gcs_with_local_path(compressed_video_path, f'webcam_videos/{file_name}')
                         WebcamHistory.objects.create(webcam=webcam, video=f'webcam_videos/{file_name}')
-                        self.stdout.write(f"Saved video for webcam '{webcam.name}' (ID: {webcam.id}).")
+                        self.stdout.write(
+                            f"Saved and uploaded compressed video for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     else:
                         cap = cv2.VideoCapture(url)
                         if not cap.isOpened():
-                            self.stdout.write(f"Failed to open video stream for webcam '{webcam.name}' (ID: {webcam.id}).")
+                            self.stdout.write(
+                                f"Failed to open video stream for webcam '{webcam.name}' (ID: {webcam.id}).")
                         else:
                             ret, frame = cap.read()
                             if ret:
@@ -67,7 +83,8 @@ class Command(BaseCommand):
                                 WebcamHistory.objects.create(webcam=webcam, image=file_name)
                                 self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
                             else:
-                                self.stdout.write(f"Failed to capture frame for webcam '{webcam.name}' (ID: {webcam.id}).")
+                                self.stdout.write(
+                                    f"Failed to capture frame for webcam '{webcam.name}' (ID: {webcam.id}).")
                             cap.release()
 
             except requests.RequestException as e:
@@ -117,3 +134,26 @@ class Command(BaseCommand):
         blob = self.bucket.blob(file_name)
         blob.upload_from_string(content)
         self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
+
+    def _compress_video(self, input_path, output_path):
+        """Compress video using ffmpeg."""
+        # f'ffmpeg -i {full_path} -vf "scale=640:-1,fps=10" -c:v libx264 -crf 35 -an {compressed_path}')
+        cmd = ['ffmpeg', '-i', input_path, '-vf', 'scale=640:-1,fps=10', '-c:v', 'libx264', '-crf', '35', '-an', output_path]
+        # Wait for the process to finish and check for errors
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+
+        # Ensure that the process completes successfully
+        if result.returncode == 0:
+            self.stdout.write(f"Video compression finished. Compressed video saved to {output_path}.")
+        else:
+            self.stderr.write(f"Error compressing video: {result.stderr.decode()}")
+
+    def _save_file_to_gcs_with_local_path(self, local_path, file_name):
+        """Upload a local file to Google Cloud Storage."""
+        blob = self.bucket.blob(file_name)
+        # Ensure the file exists before uploading
+        if os.path.exists(local_path):
+            blob.upload_from_filename(local_path)
+            self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
+        else:
+            self.stderr.write(f"File {local_path} does not exist, skipping upload.")
