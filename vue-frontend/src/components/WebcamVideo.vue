@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     isVideo(url) {
-      const videoExtensions = /\.(mp4|webm|ogg)$/i;
+      const videoExtensions = /(mp4|webm|ogg)/i; // Remove the anchoring `^` and `$`
       return videoExtensions.test(url) || url.includes('rtsp.me');
     },
     isIframe(url) {
