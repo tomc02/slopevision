@@ -5,4 +5,4 @@
 */15 6-17 * * * root {{ project_root }}/scripts/fetch_video_urls.sh >> /var/log/fetch_video_urls.log 2>&1
 
 # Run save_history every hour at minute 2 from 6:00 AM to 4:00 PM
-*/30 6-16 * * * root {{ project_root }}/scripts/save_history.sh >> /var/log/save_history.log 2>&1
+2 6-16 * * * root {{ project_root }}/scripts/save_history.sh >> /var/log/save_history.log 2>&1
