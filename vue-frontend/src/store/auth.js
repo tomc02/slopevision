@@ -28,9 +28,8 @@ const mutations = {
 const actions = {
     async register({commit}, user) {
         try {
-            const response = await AuthService.register(user);
+            await AuthService.register(user);
             const userDetail = await AuthService.getUserDetails();
-            userDetail.data.key = response.data.key;
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
         } catch (error) {
@@ -41,7 +40,7 @@ const actions = {
         try {
             const response = await AuthService.login(user);
             const userDetail = await AuthService.getUserDetails();
-            userDetail.data.key = response.data.key;
+            localStorage.setItem('token', response.data.key);
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
         } catch (error) {
@@ -57,6 +56,18 @@ const actions = {
         } catch (error) {
             commit('SET_ERROR', error.response.data);
             throw error;
+        }
+    },
+    async rehydrateState({commit}) {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const response = await AuthService.getUser();
+                commit('SET_USER', response.data);
+            } catch {
+                localStorage.removeItem('token');
+                commit('SET_USER', null);
+            }
         }
     },
 };
