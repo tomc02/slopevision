@@ -16,3 +16,5 @@ pytz
 bs4
 django-storages
 google-cloud-storage
+django-allauth
+dj-rest-auth
