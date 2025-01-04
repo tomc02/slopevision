@@ -165,3 +165,4 @@ node_modules/
 deploy/inventory.ini
 slopevision_django/media
 slopevision_django/static/
+slopevision_django/slopevision-dev.json
