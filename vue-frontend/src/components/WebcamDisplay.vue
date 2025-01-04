@@ -134,9 +134,9 @@ export default {
       selectedDate.value = normalizedSelectedTimestamp;
     };
 
-    const handleDateSelected = ({date}) => {
+    const handleDateSelected = async ({date}) => {
       selectedDate.value = date;
-      fetchHistory();
+      await fetchHistory();
     };
 
 
