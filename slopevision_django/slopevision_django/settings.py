@@ -131,6 +131,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('FRONTEND_URL')
+]
 #STATIC_URL = '/static/'
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -196,5 +199,5 @@ SITE_ID = 1
 # Allauth Configuration
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Allow login with username or email
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'optional'  # 'mandatory', 'optional', or 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # 'mandatory', 'optional', or 'none'
 ACCOUNT_USERNAME_REQUIRED = True

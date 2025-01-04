@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),  # Generates the OpenAPI schema
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),  # Swagger UI
+    path('api/auth/', include('dj_rest_auth.urls')),  # Login/Logout endpoints
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration endpoints
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
