@@ -14,3 +14,5 @@ selenium
 opencv-python
 pytz
 bs4
+django-storages
+google-cloud-storage
