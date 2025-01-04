@@ -131,18 +131,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 CORS_ALLOW_ALL_ORIGINS = True
-STATIC_URL = '/home/tomas/projects/slopevision/slopevision_django/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_URL = '/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    "/home/tomas/projects/slopevision/slopevision_django/slopevision-dev.json"
+    os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 )
 
 GS_BUCKET_NAME = 'slopevision-dev'
-
+STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/static/'
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
@@ -152,10 +152,12 @@ STORAGES = {
         },
     },
     "staticfiles": {  # For static files
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         "OPTIONS": {
-            "location": "static/",  # Local directory to store static files
+            "bucket_name": GS_BUCKET_NAME,
+            "credentials": GS_CREDENTIALS,
         },
+        "location": "static"
     },
 }
 
