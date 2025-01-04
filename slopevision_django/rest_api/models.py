@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.gis.db import models as gis_models
+from django.db import models
+
 
 class Place(models.Model):
     """
@@ -14,7 +15,8 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Webcam(models.Model):
     """
     A webcam associated with a specific place.
@@ -23,14 +25,14 @@ class Webcam(models.Model):
     IPCAM = 'IPCAM'
     SCRAPE = 'SCRAPE'
     IMG_TAG = 'IMG_TAG'
-    
+
     WEB_CAM_CHOICES = [
         (API, 'API'),
         (IPCAM, 'IP Camera'),
         (SCRAPE, 'Scraped Video'),
         (IMG_TAG, 'Image Tag'),
     ]
-    
+
     name = models.CharField(max_length=100)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='webcams')
     source_type = models.CharField(
@@ -38,14 +40,14 @@ class Webcam(models.Model):
         choices=WEB_CAM_CHOICES,
         default=IPCAM,
     )
-    
+
     # The URL that corresponds to the webcam source
     # For API and IP Camera, this could be an endpoint or stream URL
     source_url = models.URLField(max_length=1000, blank=True, null=True)
-    
+
     # For SCRAPE source, we save the page URL (where to scrape video)
     page_url = models.URLField(max_length=200, blank=True, null=True)
-    
+
     # For IMG_TAG source, we save the page URL and the image's unique identifier (img ID)
     img_page_url = models.URLField(max_length=200, blank=True, null=True)
     img_tag_id = models.CharField(max_length=100, blank=True, null=True)
@@ -59,10 +61,18 @@ class Webcam(models.Model):
     def __str__(self):
         return self.name
 
+
 class WebcamHistory(models.Model):
     """
     Historical snapshots of webcam data (e.g., image or video link).
     """
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['timestamp']),
+            models.Index(fields=['webcam', 'timestamp']),
+        ]
+
     webcam = models.ForeignKey(Webcam, on_delete=models.CASCADE, related_name='history')
     timestamp = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='webcam_images', blank=True, null=True)

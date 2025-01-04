@@ -70,8 +70,9 @@ export default {
   },
   methods: {
     async fetchAvailableTimes(date) {
+      this.availableTimes = {};
       try {
-        const response = await fetch(`/api/webcams/${this.webcamId}/history?date=${date}`);
+        const response = await fetch(`/api/webcams/${this.webcamId}/history?date=${date}&times=true`);
         const data = await response.json();
         if (Object.keys(data).length) {
           this.availableTimes = data;
@@ -89,6 +90,9 @@ export default {
         this.selectedDate = selectedDates[0].toISOString().split('T')[0]; // Update selectedDate
         this.fetchAvailableTimes(this.selectedDate);
         this.selectedTime = ''; // Reset selected time when date changes
+        if (this.selectedDate){
+          this.$emit('date-selected', {date: this.selectedDate});
+        }
       }
     },
     onTimeSelected() {
@@ -113,6 +117,9 @@ export default {
       this.selectedDate = this.getTodayDate();
       this.fetchAvailableTimes(this.selectedDate);
       this.selectedTime = ''; // Reset selected time when date changes
+      if (this.selectedDate){
+        this.$emit('date-selected', {date: this.selectedDate});
+      }
     },
     changeDate(days) {
       if (this.selectedDate) {
@@ -120,6 +127,10 @@ export default {
         currentDate.setDate(currentDate.getDate() + days);
         this.selectedDate = currentDate.toISOString().split('T')[0];
         this.fetchAvailableTimes(this.selectedDate);
+        this.selectedTime = '';
+        if (this.selectedDate){
+          this.$emit('date-selected', {date: this.selectedDate});
+        }
       }
     },
   },

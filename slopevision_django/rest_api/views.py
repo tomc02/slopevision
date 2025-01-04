@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -67,15 +68,26 @@ class WebcamViewSet(viewsets.ModelViewSet):
 
         # if ?date=2021-10-01 is provided, filter by that date
         date = request.query_params.get('date')
+        # if ?times=true is provided, return only available times for that date
+        times = request.query_params.get('times')
         if date:
-            # Filter by the provided date and order by timestamp
-            history = WebcamHistory.objects.filter(webcam=webcam, timestamp__date=date).order_by('-timestamp')
-            # Return only available times for that date
-            return Response({str(h.timestamp.time())[:5]: h.timestamp for h in history})
+            start_date = datetime.strptime(date, "%Y-%m-%d")
+            end_date = start_date + timedelta(days=1)
+            history = WebcamHistory.objects.filter(
+                webcam=webcam,
+                timestamp__gte=start_date,
+                timestamp__lt=end_date
+            ).order_by('-timestamp')
+            if times:
+                available_times = history.values_list('timestamp', flat=True)
+                response_data = {str(time.time())[:5]: time for time in available_times}
+            else:
+                response_data = WebcamHistorySerializer(history, many=True).data
+            return Response(response_data)
         else:
             # If no date is provided, return all history
             history = WebcamHistory.objects.filter(webcam=webcam).order_by('-timestamp')
-        
+
         return Response(WebcamHistorySerializer(history, many=True).data)
 
 
