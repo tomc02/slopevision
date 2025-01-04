@@ -135,7 +135,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 )
 
 GS_BUCKET_NAME = 'slopevision-dev'
-
+STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/static/'
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
@@ -145,10 +145,12 @@ STORAGES = {
         },
     },
     "staticfiles": {  # For static files
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         "OPTIONS": {
-            "location": "static/",  # Local directory to store static files
+            "bucket_name": GS_BUCKET_NAME,
+            "credentials": GS_CREDENTIALS,
         },
+        "location": "static"
     },
 }
 
