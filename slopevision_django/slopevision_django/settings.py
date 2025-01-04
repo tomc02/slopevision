@@ -14,9 +14,12 @@ import os
 from pathlib import Path
 
 from google.oauth2 import service_account
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_PATH = Path(BASE_DIR).resolve().parent / '.env'
+load_dotenv(dotenv_path=ENV_PATH)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -25,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9f3ag%^#2t@#&j6tf0lw#r(_n-m%-&ii4^-$$8diy&y3-#=u13'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -121,14 +124,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 CORS_ALLOW_ALL_ORIGINS = True
-STATIC_URL = '/home/tomas/projects/slopevision/slopevision_django/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    "/home/tomas/projects/slopevision/slopevision_django/slopevision-dev.json"
+    os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 )
 
 GS_BUCKET_NAME = 'slopevision-dev'
