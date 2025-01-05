@@ -17,15 +17,15 @@
         <!-- Navigation Links -->
         <div class="hidden md:flex space-x-6">
           <router-link
-              :class="{ 'text-gray-400': isActive('/') }"
+              :class="{ 'text-indigo-400': isActive('/live-webcams') }"
               class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
-              to="/"
+              to="/live-webcams"
           >
-            <HomeIcon class="w-5 h-5"/>
-            <span>Home</span>
+            <VideoCameraIcon class="w-5 h-5"/>
+            <span>Webcams</span>
           </router-link>
           <router-link
-              :class="{ 'text-gray-400': isActive('/favorites') }"
+              :class="{ 'text-indigo-400': isActive('/favorites') }"
               class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
               to="/favorites"
           >
@@ -33,7 +33,7 @@
             <span>Favorites</span>
           </router-link>
           <router-link
-              :class="{ 'text-gray-400': isActive('/about') }"
+              :class="{ 'text-indigo-400': isActive('/about') }"
               class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
               to="/about"
           >
@@ -111,16 +111,16 @@
     <!-- Mobile Menu -->
     <div v-if="menuOpen" class="md:hidden bg-gray-700 dark:bg-gray-600 text-white py-2 px-4 space-y-2">
       <router-link
-          :class="{ 'text-gray-400': isActive('/') }"
+          :class="{ 'text-indigo-400': isActive('/live-webcams') }"
           class="block hover:text-gray-400 flex items-center space-x-2"
-          to="/"
+          to="/live-webcams"
           @click="closeMenu"
       >
-        <HomeIcon class="w-5 h-5"/>
-        <span>Home</span>
+        <VideoCameraIcon class="w-5 h-5"/>
+        <span>Webcams</span>
       </router-link>
       <router-link
-          :class="{ 'text-gray-400': isActive('/favorites') }"
+          :class="{ 'text-indigo-400': isActive('/favorites') }"
           class="block hover:text-gray-400 flex items-center space-x-2"
           to="/favorites"
           @click="closeMenu"
@@ -129,7 +129,7 @@
         <span>Favorites</span>
       </router-link>
       <router-link
-          :class="{ 'text-gray-400': isActive('/about') }"
+          :class="{ 'text-indigo-400': isActive('/about') }"
           class="block hover:text-gray-400 flex items-center space-x-2"
           to="/about"
           @click="closeMenu"
@@ -149,7 +149,7 @@ import {useStore} from 'vuex';
 import {
   Bars3Icon,
   HeartIcon,
-  HomeIcon,
+  VideoCameraIcon,
   InformationCircleIcon,
   MoonIcon,
   SunIcon,
@@ -160,7 +160,7 @@ import {
 export default {
   name: 'AppNavbar',
   components: {
-    HomeIcon,
+    VideoCameraIcon,
     HeartIcon,
     InformationCircleIcon,
     MoonIcon,
