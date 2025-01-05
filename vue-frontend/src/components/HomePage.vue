@@ -58,7 +58,7 @@
           Sign Up Now
         </router-link>
         <router-link
-            class="bg-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-2 px-6 rounded-lg"
+            class="bg-gray-400 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-2 px-6 rounded-lg"
             to="/login"
         >
           Log In
