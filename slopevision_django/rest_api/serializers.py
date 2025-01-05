@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Place, Webcam, WebcamHistory
+from django.contrib.auth.models import User
 
 class PlaceSerializer(serializers.ModelSerializer):
     # Nested serializer for webcams (weather data and forecasts have been removed as per your instruction)
@@ -39,3 +40,27 @@ class WebcamHistorySerializer(serializers.ModelSerializer):
             data['image_url'] = None
             data['video_url'] = None
         return data
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='get_full_name')
+    email = serializers.EmailField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'name', 'email', 'date_joined']
+        read_only_fields = ['username', 'email', 'date_joined']
+
+    def update(self, instance, validated_data):
+        # Extract name from validated_data if it exists
+        name = validated_data.pop('get_full_name', None)
+        if name:
+            # Split the name into first_name and last_name
+            first_name, last_name = name.split(' ', 1) if ' ' in name else (name, '')
+            instance.first_name = first_name
+            instance.last_name = last_name
+
+        # Continue with the default update process
+        return super().update(instance, validated_data)

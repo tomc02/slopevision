@@ -33,4 +33,7 @@ export default {
             }
         });
     },
+    updateUser(user) {
+        return axios.put(API_URL + 'user/', user);
+    },
 };

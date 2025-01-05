@@ -4,6 +4,8 @@ import PlaceDetail from "../views/PlaceDetail.vue";
 import Login from "../views/LoginView.vue";
 import Register from "../views/RegisterView.vue";
 import LiveWebcams from "@/views/LiveWebcams.vue";
+import UserProfile from "@/views/UserProfile.vue";
+import EditProfile from "@/views/EditProfile.vue";
 import store from '../store';
 
 const routes = [
@@ -38,13 +40,19 @@ const routes = [
         component: Register,
         meta: { title: "Register - Slope Vision", requiresAuth: false }
     },
-    /*{
+    {
         path: "/profile",
         name: "Profile",
-        component: () => import("../views/Profile.vue"),
+        component: UserProfile,
         meta: { title: "Profile - Slope Vision", requiresAuth: true }
     },
     {
+        path: "/profile/edit",
+        name: "EditProfile",
+        component: EditProfile,
+        meta: { title: "Edit Profile - Slope Vision", requiresAuth: true }
+    }
+    /*{
         path: "/:catchAll(.*)",
         name: "NotFound",
         component: () => import("../views/NotFound.vue"),
