@@ -1,13 +1,13 @@
 <template>
-  <div class="bg-gray-200 dark:bg-gray-900 dark:text-gray-100 flex items-center justify-center py-8">
-    <div class="w-full max-w-md px-6 py-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-      <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 dark:text-gray-100">Create an Account</h2>
+  <div class="flex items-center justify-center py-8">
+    <div class="w-full max-w-md px-6 py-8 bg-item-light-bg dark:bg-item-dark-bg rounded-lg shadow-lg">
+      <h2 class="text-3xl font-bold text-center mb-6 text-primary-light dark:text-primary-dark">Create an Account</h2>
       <form class="space-y-6" @submit.prevent="handleRegister">
         <!-- Username Input -->
         <div>
           <input
               v-model="username"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-t dark:bg-item-secondary-dark dark:border-gray-600 dark:text-secondary-dark bg-item-secondary-light"
               placeholder="Username"
               required
               type="text"
@@ -18,7 +18,7 @@
         <div>
           <input
               v-model="email"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-t dark:bg-item-secondary-dark dark:border-gray-600 dark:text-secondary-dark bg-item-secondary-light"
               placeholder="Email"
               required
               type="email"
@@ -29,7 +29,7 @@
         <div>
           <input
               v-model="password1"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-t dark:bg-item-secondary-dark dark:border-gray-600 dark:text-secondary-dark bg-item-secondary-light"
               placeholder="Password"
               required
               type="password"
@@ -40,7 +40,7 @@
         <div>
           <input
               v-model="password2"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-t dark:bg-item-secondary-dark dark:border-gray-600 dark:text-secondary-dark bg-item-secondary-light"
               placeholder="Confirm Password"
               required
               type="password"
@@ -50,7 +50,7 @@
         <!-- Submit Button -->
         <div>
           <button
-              class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700"
+              class="submit-button"
               type="submit"
           >
             Register
@@ -68,13 +68,16 @@
         </div>
 
         <!-- Error Message -->
-        <div v-if="authError" class="error">
-          <p v-for="(error, index) in formattedErrors" :key="index" class="text-sm text-red-500 dark:text-red-400">{{ error }}</p>
+        <div v-if="authError" class="text-center mt-4">
+          <p v-for="(error, index) in formattedErrors" :key="index" class="text-sm text-red-500 dark:text-red-400">
+            {{ error }}
+          </p>
         </div>
       </form>
     </div>
   </div>
 </template>
+
 
 
 <script>

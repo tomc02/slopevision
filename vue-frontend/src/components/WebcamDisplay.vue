@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <div v-if="webcams.length"
-         class="relative bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg rounded-t-lg w-full max-w-6xl 3xl:max-w-screen-2xl overflow-hidden">
+         class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg rounded-t-lg w-full max-w-6xl 3xl:max-w-screen-2xl overflow-hidden">
       <!-- Webcam Image or History -->
       <div ref="webcamContainer" class="relative">
         <div v-if="selectedHistory">
@@ -14,14 +14,14 @@
         <div class="absolute inset-0 flex justify-between items-center pointer-events-none">
           <!-- Left Arrow -->
           <button
-              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-70 transform transition-transform duration-200 hover:scale-110 ml-2"
+              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-60 transform transition-transform duration-200 hover:scale-110 ml-2"
               @click="prevWebcam">
             <ChevronLeftIcon class="w-6 h-6"/>
           </button>
 
           <!-- Right Arrow -->
           <button
-              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-70 transform transition-transform duration-200 hover:scale-110 mr-2"
+              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-60 transform transition-transform duration-200 hover:scale-110 mr-2"
               @click="nextWebcam">
             <ChevronRightIcon class="w-6 h-6"/>
           </button>
@@ -39,10 +39,10 @@
       <!-- Webcam Details & History Chooser in One Row on larger screens, stacked on mobile -->
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-6">
         <div class="flex flex-col w-full sm:w-1/2">
-          <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+          <h3 class="text-2xl font-semibold text-primary-light dark:text-primary-dark">
             {{ currentWebcam.name }}
           </h3>
-          <p class="text-gray-600 dark:text-gray-300 mt-2">
+          <p class="text-secondary-light dark:text-secondary-dark mt-2">
             {{ currentWebcam.description || "No description available." }}
           </p>
         </div>

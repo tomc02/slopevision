@@ -1,10 +1,10 @@
 <template>
-  <nav class="bg-gray-800 dark:bg-gray-700 text-white shadow-lg">
+  <nav class="navbar-colors shadow-lg">
     <div class="container mx-auto px-4 flex justify-between items-center h-20 lg:h-12">
       <!-- Left: Logo and Title -->
       <div class="flex items-center space-x-3">
         <router-link
-            class="flex items-center space-x-3 hover:text-gray-400 transition duration-200"
+            class="flex items-center space-x-3 navbar-text-hover transition duration-200"
             to="/"
         >
           <img alt="Logo" class="h-10 w-10" src="../../public/icon.png"/>
@@ -17,24 +17,24 @@
         <!-- Navigation Links -->
         <div class="hidden md:flex space-x-6">
           <router-link
-              :class="{ 'text-indigo-400': isActive('/live-webcams') }"
-              class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
+              :class="{ 'navbar-text-active': isActive('/live-webcams') }"
+              class="navbar-text-hover flex items-center space-x-2"
               to="/live-webcams"
           >
             <VideoCameraIcon class="w-5 h-5"/>
             <span>Webcams</span>
           </router-link>
           <router-link
-              :class="{ 'text-indigo-400': isActive('/favorites') }"
-              class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
+              :class="{ 'navbar-text-active': isActive('/favorites') }"
+              class="navbar-text-hover flex items-center space-x-2"
               to="/favorites"
           >
             <HeartIcon class="w-5 h-5"/>
             <span>Favorites</span>
           </router-link>
           <router-link
-              :class="{ 'text-indigo-400': isActive('/about') }"
-              class="hover:text-gray-400 transition duration-200 flex items-center space-x-2"
+              :class="{ 'navbar-text-active': isActive('/about') }"
+              class="navbar-text-hover flex items-center space-x-2"
               to="/about"
           >
             <InformationCircleIcon class="w-5 h-5"/>
@@ -45,7 +45,7 @@
         <!-- Dark Mode Toggle -->
         <button
             aria-label="Toggle Dark Mode"
-            class="p-2 bg-gray-700 dark:bg-gray-600 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-500 transition duration-200"
+            class="p-2 navbar-button rounded"
             @click="toggleDarkMode"
         >
           <MoonIcon v-if="darkMode" class="w-5 h-5"/>
@@ -55,7 +55,7 @@
         <!-- User Account Menu -->
         <div class="relative">
           <button
-              class="relative p-2 bg-gray-700 dark:bg-gray-600 text-white rounded-full hover:bg-gray-600 dark:hover:bg-gray-500 transition duration-200"
+              class="relative p-1.5 navbar-button rounded-full border"
               @click="toggleUserMenu"
           >
             <UserIcon class="w-6 h-6"/>
@@ -63,19 +63,19 @@
 
           <div
               v-if="userMenuOpen"
-              class="absolute right-0 mt-2 bg-white dark:bg-gray-700 text-black dark:text-white rounded shadow-lg w-40 z-10"
+              class="navbar-menu absolute right-0 mt-2 rounded shadow-lg w-40 z-10"
           >
             <template v-if="isAuthenticated">
               <p class="p-2 border-b text-gray-800 dark:text-gray-200 font-semibold">{{ username }}</p>
               <router-link
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  class="navbar-menu-item block px-4 py-2 rounded-tl-lg rounded-tr-lg navbar-menu-border"
                   to="/profile"
                   @click="closeUserMenu"
               >
                 Profile
               </router-link>
               <button
-                  class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  class="navbar-menu-item block w-full text-left px-4 py-2 0 rounded-b-lg text-danger"
                   @click="logout"
               >
                 Logout
@@ -83,14 +83,14 @@
             </template>
             <template v-else>
               <router-link
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  class="navbar-menu-item block px-4 py-2 rounded-tl-lg rounded-tr-lg navbar-menu-border"
                   to="/login"
                   @click="closeUserMenu"
               >
                 Login
               </router-link>
               <router-link
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  class="navbar-menu-item block px-4 py-2 rounded-b-lg"
                   to="/register"
                   @click="closeUserMenu"
               >
@@ -109,10 +109,10 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="menuOpen" class="md:hidden bg-gray-700 dark:bg-gray-600 text-white py-2 px-4 space-y-2">
+    <div v-if="menuOpen" class="md:hidden navbar-menu py-2 px-4 space-y-2">
       <router-link
-          :class="{ 'text-indigo-400': isActive('/live-webcams') }"
-          class="block hover:text-gray-400 flex items-center space-x-2"
+          :class="{ 'navbar-text-active': isActive('/live-webcams') }"
+          class="navbar-text-hover navbar-menu-border navbar-menu-item flex items-center space-x-2 pb-2"
           to="/live-webcams"
           @click="closeMenu"
       >
@@ -120,8 +120,8 @@
         <span>Webcams</span>
       </router-link>
       <router-link
-          :class="{ 'text-indigo-400': isActive('/favorites') }"
-          class="block hover:text-gray-400 flex items-center space-x-2"
+          :class="{ 'navbar-text-active': isActive('/favorites') }"
+          class="navbar-text-hover navbar-menu-border navbar-menu-item flex items-center space-x-2 pb-2"
           to="/favorites"
           @click="closeMenu"
       >
@@ -129,8 +129,8 @@
         <span>Favorites</span>
       </router-link>
       <router-link
-          :class="{ 'text-indigo-400': isActive('/about') }"
-          class="block hover:text-gray-400 flex items-center space-x-2"
+          :class="{ 'navbar-text-active': isActive('/about') }"
+          class="navbar-text-hover navbar-menu-item flex items-center space-x-2 pb-2"
           to="/about"
           @click="closeMenu"
       >
@@ -193,7 +193,7 @@ export default {
     });
 
     const handleOutsideClick = (event) => {
-      if(userMenuOpen.value){
+      if (userMenuOpen.value) {
         if (!event.target.closest('.relative')) {
           userMenuOpen.value = false;
         }

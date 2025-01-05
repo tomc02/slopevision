@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-200 dark:bg-gray-900 dark:text-gray-100 min-h-fit py-8">
+  <div class="min-h-fit py-8">
     <div class="container mx-auto px-4">
       <!-- Page Title -->
       <h1 class="text-3xl font-bold mb-8 text-center">
@@ -22,14 +22,14 @@
           v-for="place in filteredPlaces"
           :key="place.id"
           :to="{ name: 'PlaceDetail', params: { id: place.id } }"
-          class="bg-gray-300 dark:bg-gray-700 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105"
+          class="bg-item-light-bg dark:bg-item-dark-bg rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105"
         >
           <WebcamVideo :altText="place.name" :url="place.firstWebcam" style="pointer-events: none"/>
 
           <!-- Place Details -->
           <div class="p-4">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ place.name }}</h2>
-            <p class="text-gray-600 dark:text-gray-300 mt-2 text-sm line-clamp-3">
+            <h2 class="text-xl font-semibold text-primary-light dark:text-primary-dark">{{ place.name }}</h2>
+            <p class="text-secondary-light dark:text-secondary-dark mt-2 text-sm line-clamp-3">
               {{ place.description || "No description available." }}
             </p>
           </div>
