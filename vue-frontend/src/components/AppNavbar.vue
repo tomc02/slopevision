@@ -63,7 +63,7 @@
 
           <div
               v-if="userMenuOpen"
-              class="absolute right-0 mt-2 bg-white dark:bg-gray-700 text-black dark:text-white rounded shadow-lg w-40"
+              class="absolute right-0 mt-2 bg-white dark:bg-gray-700 text-black dark:text-white rounded shadow-lg w-40 z-10"
           >
             <template v-if="isAuthenticated">
               <p class="p-2 border-b text-gray-800 dark:text-gray-200 font-semibold">{{ username }}</p>

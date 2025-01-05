@@ -130,6 +130,8 @@ export default {
           ...selectedItem,
           url: selectedItem.image || selectedItem.video
         };
+      } else {
+        setTimeout(handleDateTimeSelected, 500, {timestamp});
       }
       selectedDate.value = normalizedSelectedTimestamp;
     };
