@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Place, Webcam, WebcamHistory
-from django.contrib.auth.models import User
+from rest_api.models import CustomUser
+from .fields import Base64ImageField
 
 class PlaceSerializer(serializers.ModelSerializer):
     # Nested serializer for webcams (weather data and forecasts have been removed as per your instruction)
@@ -47,10 +48,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(read_only=True)
     username = serializers.CharField(read_only=True)
     date_joined = serializers.DateTimeField(read_only=True)
+    account_type = serializers.CharField(required=False)
+    profile_picture = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
-        model = User
-        fields = ['username', 'name', 'email', 'date_joined']
+        model = CustomUser
+        fields = ['username', 'name', 'email', 'date_joined', 'account_type', 'profile_picture']
         read_only_fields = ['username', 'email', 'date_joined']
 
     def update(self, instance, validated_data):

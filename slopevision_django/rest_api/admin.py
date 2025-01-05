@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from rest_api.models import Place, Webcam, WebcamHistory
+from rest_api.models import Place, Webcam, WebcamHistory, CustomUser
 from leaflet.admin import LeafletGeoAdmin
 
 # Register your models here.
@@ -12,3 +12,4 @@ class PlaceAdmin(LeafletGeoAdmin):
     ordering = ('name',)
 admin.site.register(Webcam)
 admin.site.register(WebcamHistory)
+admin.site.register(CustomUser)

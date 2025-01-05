@@ -12,7 +12,7 @@
         <div class="flex items-center justify-center mb-6">
           <div class="w-24 h-24 rounded-full overflow-hidden shadow-md">
             <img
-              :src="userProfile.image || '/default-profile.png'"
+              :src="userProfile.image"
               alt="Profile Picture"
               class="object-cover w-full h-full"
             />
@@ -84,14 +84,14 @@ export default {
   data() {
     const user = computed(() => store.getters['auth/currentUser'] || 'User');
     const memberSince = new Date(user.value.date_joined);
-    console.log(user.value.name);
+    const accountType = user.value.account_type === 'free' ? 'Free' : 'Premium';
     return {
       userProfile: {
-        image: "/path-to-profile.jpg",
+        image: user.value.profile_picture,
         name: user.value.name,
         email: user.value.email,
         username: user.value.username,
-        accountType: "Premium",
+        accountType: accountType,
         memberSince: memberSince.toLocaleString('default', {month: 'long', year: 'numeric'}),
       },
     };

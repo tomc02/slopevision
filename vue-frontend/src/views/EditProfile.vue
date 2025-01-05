@@ -13,7 +13,7 @@
           <div class="text-center">
             <div class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md mb-4">
               <img
-                :src="profileData.image || '/default-profile.png'"
+                :src="profileData.image"
                 alt="Profile Picture"
                 class="object-cover w-full h-full"
               />
@@ -105,7 +105,7 @@ export default {
     const user = computed(() => store.getters['auth/currentUser'] || 'User');
     return {
       profileData: {
-        image: "/path-to-profile.jpg",
+        image: user.value.profile_picture,
         name: user.value.name,
         email: user.value.email,
         username: user.value.username,
