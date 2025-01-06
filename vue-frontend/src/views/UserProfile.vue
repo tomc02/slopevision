@@ -57,6 +57,16 @@
           </div>
         </div>
 
+        <!-- Upgrade CTA -->
+        <div class="mb-8 text-center">
+          <router-link
+            to="/upgrade-account"
+            class="inline-block text-indigo-600 hover:text-indigo-500 font-semibold text-lg transition-colors duration-200"
+          >
+            Upgrade Your Plan
+          </router-link>
+        </div>
+
         <!-- Action Buttons -->
         <div class="mt-8 flex justify-center space-x-4">
           <router-link
@@ -65,12 +75,13 @@
           >
           Edit Profile
           </router-link>
-          <button
+          <router-link
+            to="/logout"
             @click="logout"
             class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-500 focus:ring-2 focus:ring-red-400"
           >
             Logout
-          </button>
+           </router-link>
         </div>
       </div>
     </div>
@@ -100,6 +111,7 @@ export default {
     editProfile() {
     },
     logout() {
+      // Log the user out
     },
   },
 };

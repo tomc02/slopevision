@@ -156,6 +156,7 @@ import {
   UserIcon,
   XMarkIcon
 } from '@heroicons/vue/24/outline';
+import router from "@/router";
 
 export default {
   name: 'AppNavbar',
@@ -214,7 +215,8 @@ export default {
     const closeUserMenu = () => (userMenuOpen.value = false);
 
     const logout = async () => {
-      await store.dispatch('auth/logout');
+      // use router to navigate to the logout view
+      await router.push({ name: 'Logout' });
       closeUserMenu();
     };
 
