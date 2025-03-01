@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.navbar-text-hover {
+    @apply hover:text-gray-400 transition duration-200;
+}
+
+.navbar-text-active {
+    @apply text-indigo-t;
+}
+
+.navbar-colors {
+    @apply bg-navbar-light-bg text-navbar-light-text dark:bg-navbar-dark-bg dark:text-navbar-dark-text;
+}
+
+.navbar-button {
+    @apply text-primary-light dark:text-primary-dark hover:text-gray-400 dark:hover:text-gray-400
+    border-primary-light dark:border-primary-dark hover:border-gray-400 dark:hover:border-gray-400
+    transition-colors duration-200;
+}
+
+.navbar-menu-border {
+    @apply border-b border-gray-200 dark:border-gray-500;
+}
+
+.navbar-menu {
+    @apply bg-item-secondary-light dark:bg-item-secondary-dark text-black dark:text-white;
+}
+
+.navbar-menu-item {
+    @apply hover:bg-gray-200 dark:hover:bg-gray-600;
+}
+
+.submit-button{
+    @apply w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700;
+}

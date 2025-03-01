@@ -12,6 +12,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from rest_api.models import Webcam, WebcamHistory
+import pytz
 
 
 class Command(BaseCommand):
@@ -25,9 +26,11 @@ class Command(BaseCommand):
         self.bucket = self.storage_client.bucket(self.bucket_name)
 
     def handle(self, *args, **kwargs):
+        prague_tz = pytz.timezone('Europe/Prague')
+        prague_now = now().astimezone(prague_tz)
         active_webcams = Webcam.objects.all()
-        self.stdout.write(f"Found {active_webcams.count()} active webcams.")
 
+        self.stdout.write(f"Found {active_webcams.count()} active webcams.")
         for webcam in active_webcams:
             url = webcam.source_url
 
@@ -49,7 +52,7 @@ class Command(BaseCommand):
 
                     if 'image' in content_type:
                         self._save_file_to_gcs(response, f'webcam_images/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, image=f'webcam_images/{file_name}')
+                        WebcamHistory.objects.create(webcam=webcam, image=f'webcam_images/{file_name}', timestamp=prague_now)
                         self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     elif 'video' in content_type:
@@ -66,7 +69,7 @@ class Command(BaseCommand):
 
                         # Upload compressed video to Google Cloud Storage
                         self._save_file_to_gcs_with_local_path(compressed_video_path, f'webcam_videos/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, video=f'webcam_videos/{file_name}')
+                        WebcamHistory.objects.create(webcam=webcam, video=f'webcam_videos/{file_name}', timestamp=prague_now)
                         self.stdout.write(
                             f"Saved and uploaded compressed video for webcam '{webcam.name}' (ID: {webcam.id}).")
 
@@ -80,7 +83,7 @@ class Command(BaseCommand):
                             if ret:
                                 file_name = f'webcam_images/{webcam.id}_{timestamp}.jpg'
                                 self._save_frame_to_gcs(frame, file_name)
-                                WebcamHistory.objects.create(webcam=webcam, image=file_name)
+                                WebcamHistory.objects.create(webcam=webcam, image=file_name, timestamp=prague_now)
                                 self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
                             else:
                                 self.stdout.write(
@@ -98,6 +101,8 @@ class Command(BaseCommand):
         """Use a headless browser to capture a screenshot of an embedded page."""
         timestamp = now().strftime('%Y%m%d%H%M%S')
         file_name = f'webcam_images/{webcam.id}_{timestamp}.png'
+        prague_tz = pytz.timezone('Europe/Prague')
+        prague_now = now().astimezone(prague_tz)
 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -113,7 +118,7 @@ class Command(BaseCommand):
             # Save screenshot to Google Cloud Storage
             self._save_bytes_to_gcs(png, file_name)
 
-        WebcamHistory.objects.create(webcam=webcam, image=file_name)
+        WebcamHistory.objects.create(webcam=webcam, image=file_name, timestamp=prague_now)
         self.stdout.write(f"Saved screenshot for embedded webcam '{webcam.name}' (ID: {webcam.id}).")
 
     def _save_file_to_gcs(self, response, file_name):

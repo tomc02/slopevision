@@ -1,12 +1,12 @@
 <template>
   <div class="relative w-full">
-    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-1.5" for="datetime-picker">
+    <label class="block text-secondary-light dark:text-secondary-dark font-semibold mb-1.5" for="datetime-picker">
       Choose Webcam History Time
     </label>
     <div class="flex items-center space-x-2">
       <!-- Previous Date Button -->
       <button
-          class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-secondary-light dark:bg-item-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600"
           @click="changeDate(-1)"
       >
         <ChevronLeftIcon class="w-4 h-6"/>
@@ -17,14 +17,14 @@
           id="datetime-picker"
           ref="flatpickr"
           v-model="selectedDate"
-          class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-light-bg dark:bg-item-dark-bg w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           placeholder="Select Date"
           type="text"
       />
 
       <!-- Next Date Button -->
       <button
-          class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-secondary-light dark:bg-item-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600"
           @click="changeDate(1)"
       >
         <ChevronRightIcon class="w-4 h-6"/>
@@ -33,7 +33,7 @@
       <!-- Time picker select -->
       <select v-model="selectedTime"
               :disabled="!Object.keys(availableTimes).length"
-              class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+              class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-light-bg dark:bg-item-dark-bg w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
         <option v-for="(timestamp, time) in availableTimes" :key="time" :value="time">
           {{ time }}
         </option>
@@ -70,8 +70,9 @@ export default {
   },
   methods: {
     async fetchAvailableTimes(date) {
+      this.availableTimes = {};
       try {
-        const response = await fetch(`/api/webcams/${this.webcamId}/history?date=${date}`);
+        const response = await fetch(`/api/webcams/${this.webcamId}/history?date=${date}&times=true`);
         const data = await response.json();
         if (Object.keys(data).length) {
           this.availableTimes = data;
@@ -89,6 +90,9 @@ export default {
         this.selectedDate = selectedDates[0].toISOString().split('T')[0]; // Update selectedDate
         this.fetchAvailableTimes(this.selectedDate);
         this.selectedTime = ''; // Reset selected time when date changes
+        if (this.selectedDate) {
+          this.$emit('date-selected', {date: this.selectedDate});
+        }
       }
     },
     onTimeSelected() {
@@ -113,6 +117,9 @@ export default {
       this.selectedDate = this.getTodayDate();
       this.fetchAvailableTimes(this.selectedDate);
       this.selectedTime = ''; // Reset selected time when date changes
+      if (this.selectedDate) {
+        this.$emit('date-selected', {date: this.selectedDate});
+      }
     },
     changeDate(days) {
       if (this.selectedDate) {
@@ -120,6 +127,10 @@ export default {
         currentDate.setDate(currentDate.getDate() + days);
         this.selectedDate = currentDate.toISOString().split('T')[0];
         this.fetchAvailableTimes(this.selectedDate);
+        this.selectedTime = '';
+        if (this.selectedDate) {
+          this.$emit('date-selected', {date: this.selectedDate});
+        }
       }
     },
   },

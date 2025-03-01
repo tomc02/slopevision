@@ -1,16 +1,16 @@
 <template>
   <div>
-    <PlaceOverview />
+    <HomePage />
   </div>
 </template>
 
 <script>
-import PlaceOverview from "../components/PlaceOverview.vue";
+import HomePage from "@/components/HomePage.vue";
 
 export default {
   name: "HomeView",
   components: {
-    PlaceOverview,
+    HomePage,
   },
 };
 </script>
