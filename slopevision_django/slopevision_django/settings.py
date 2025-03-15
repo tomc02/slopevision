@@ -41,9 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
     'rest_api',
-    'leaflet',
     'drf_spectacular',
     'rest_framework',
     'corsheaders',
@@ -93,13 +91,13 @@ WSGI_APPLICATION = 'slopevision_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    'old_db': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db_old.sqlite3',
-    },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'slopevision',           # The name of your database
+        'USER': 'slopevision',                # The PostgreSQL user
+        'PASSWORD': 'slopevision',        # The password for the PostgreSQL user
+        'HOST': '35.227.109.191',  # The IP address or domain of the server
+        'PORT': '5432',                  # The default port for PostgreSQL
+    }
 }
 
 # Password validation
@@ -182,12 +180,6 @@ GS_FILE_OVERWRITE = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LEAFLET_CONFIG = {
-    'DEFAULT_TILE_LAYER': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'DEFAULT_TILE_LAYER_ATTR': 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    'DEFAULT_CENTER': (49.437315, 18.78643),  # Latitude and longitude of the center of the map
-    'DEFAULT_ZOOM': 11,  # Default zoom level
-}
 
 # DRF Spectacular Settings
 REST_FRAMEWORK = {
