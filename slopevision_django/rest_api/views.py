@@ -5,9 +5,6 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
 from .models import Place, Webcam, WebcamHistory
 from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySerializer
-from dj_rest_auth.views import UserDetailsView
-from rest_framework.permissions import IsAuthenticated
-from .serializers import CustomUserSerializer
 
 @extend_schema_view(
     list=extend_schema(
@@ -106,13 +103,3 @@ class WebcamViewSet(viewsets.ModelViewSet):
 class WebcamHistoryViewSet(viewsets.ModelViewSet):
     queryset = WebcamHistory.objects.all()
     serializer_class = WebcamHistorySerializer
-
-@extend_schema_view(
-    list=extend_schema(
-        description="Retrieve the details of the authenticated user.",
-        responses={200: CustomUserSerializer}
-    )
-)
-class CustomUserDetailsView(UserDetailsView):
-    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
-    serializer_class = CustomUserSerializer  # Use your custom serializer
