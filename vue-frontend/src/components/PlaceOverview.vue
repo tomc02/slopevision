@@ -63,9 +63,10 @@ export default {
     const places = ref([]);
     const searchQuery = ref("");
     const favorites = ref(new Set()); // Track favorites as a Set for quick lookup.
+    const apiBaseUrl = "http://localhost:8000";
 
     const fetchPlaces = async () => {
-      const response = await fetch(`/api/places/`, {method: "GET"});
+      const response = await fetch(`${apiBaseUrl}/api/places/`, {method: "GET"});
       const data = await response.json();
       for (let i = 0; i < data.length; i++) {
         data[i].firstWebcam = await fetchFirstWebcam(data[i].id);
@@ -74,7 +75,7 @@ export default {
     };
 
     const fetchFirstWebcam = async (placeId) => {
-      const response = await fetch(`/api/places/${placeId}/webcams/`);
+      const response = await fetch(`${apiBaseUrl}/api/places/${placeId}/webcams/`);
       const data = await response.json();
       return data[0]?.url || "";
     };

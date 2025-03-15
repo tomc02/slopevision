@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'storages',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,7 @@ WSGI_APPLICATION = 'slopevision_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'slopevision',           # The name of your database
+        'NAME': 'slopevision2',           # The name of your database
         'USER': 'slopevision',                # The PostgreSQL user
         'PASSWORD': 'slopevision',        # The password for the PostgreSQL user
         'HOST': '35.227.109.191',  # The IP address or domain of the server
@@ -112,7 +113,7 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080',
+    'https://localhost:8080',
     'https://frontend-dot-slopevision-dev.ue.r.appspot.com'
 ]
 #STATIC_URL = '/static/'
@@ -154,3 +155,4 @@ GS_FILE_OVERWRITE = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'

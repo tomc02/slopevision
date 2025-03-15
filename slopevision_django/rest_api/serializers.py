@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from .models import Place, Webcam, WebcamHistory
 from .fields import Base64ImageField
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password']
 
 class PlaceSerializer(serializers.ModelSerializer):
     # Nested serializer for webcams (weather data and forecasts have been removed as per your instruction)

@@ -1,10 +1,55 @@
 from datetime import datetime, timedelta
-from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework import viewsets, status
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
 from .models import Place, Webcam, WebcamHistory
-from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySerializer
+from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySerializer, UserSerializer
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
+
+
+@api_view(['POST'])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)  # Authenticate user
+    if user is None:
+        return Response({'error': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Log the user into Django's session
+    login(request, user)
+    token, created = Token.objects.get_or_create(user=user)
+
+    return Response({'token': token.key, 'user': UserSerializer(user).data})
+
+
+@api_view(['POST'])
+def registration_view(request):
+    print(request.data)
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        user.set_password(request.data['password'])
+        user.save()
+        token = Token.objects.create(user=user)
+        return Response({'token': token.key, 'user': UserSerializer(user).data})
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def user_view(request):
+    print(request.user)
+    return Response(UserSerializer(request.user).data)
+   
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -79,13 +124,16 @@ class WebcamViewSet(viewsets.ModelViewSet):
             ).order_by('-timestamp')
             if times:
                 available_times = history.values_list('timestamp', flat=True)
-                response_data = {str(time.time())[:5]: time for time in available_times}
+                response_data = {
+                    str(time.time())[:5]: time for time in available_times}
             else:
-                response_data = WebcamHistorySerializer(history, many=True).data
+                response_data = WebcamHistorySerializer(
+                    history, many=True).data
             return Response(response_data)
         else:
             # If no date is provided, return all history
-            history = WebcamHistory.objects.filter(webcam=webcam).order_by('-timestamp')
+            history = WebcamHistory.objects.filter(
+                webcam=webcam).order_by('-timestamp')
 
         return Response(WebcamHistorySerializer(history, many=True).data)
 

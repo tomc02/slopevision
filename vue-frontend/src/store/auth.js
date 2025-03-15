@@ -11,7 +11,7 @@ const mutations = {
         console.log('SET_USER', user);
         state.user = user;
         state.isAuthenticated = !!user;
-        state.isPremium = user?.account_type !== 'free';
+        state.isPremium = true;//user?.account_type !== 'free';
         console.log('state.isPremium', state.isPremium);
     },
     SET_ERROR(state, errors) {
@@ -42,9 +42,8 @@ const actions = {
     async login({commit}, user) {
         try {
             const response = await AuthService.login(user);
-            const userDetail = await AuthService.getUserDetails();
-            localStorage.setItem('token', response.data.key);
-            commit('SET_USER', userDetail.data);
+            localStorage.setItem('token', response.data.token);
+            commit('SET_USER', response.data.user);
             commit('CLEAR_ERROR');
         } catch (error) {
             commit('SET_ERROR', error.response.data);

@@ -1,16 +1,12 @@
 // vue.config.js
+const fs = require("fs");
 module.exports = {
   devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://0.0.0.0:8000',
-        changeOrigin: true,
-
-      },
-      '/media': {
-        target: 'http://0.0.0.0:8000',
-        changeOrigin: true,
-      }
-    }
+    https: {
+      key: fs.readFileSync("localhost-key.pem"),
+      cert: fs.readFileSync("localhost.pem"),
+    },
+    host: "localhost",
+    port: 8080,
   }
 };

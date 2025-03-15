@@ -23,14 +23,14 @@ const routes = [
         path: "/live-webcams",
         name: "LiveWebcams",
         component: LiveWebcams,
-        meta: {title: "Live Webcams - Slope Vision", requiresAuth: true, requiresPremium: true}
+        meta: {title: "Live Webcams - Slope Vision", requiresAuth: false, requiresPremium: false}
     },
     {
         path: "/place/:id",
         name: "PlaceDetail",
         component: PlaceDetail,
         props: true,
-        meta: {title: "Place Detail - Slope Vision", requiresAuth: true, requiresPremium: true}
+        meta: {title: "Place Detail - Slope Vision", requiresAuth: false, requiresPremium: false}
     },
     {
         path: "/login",
