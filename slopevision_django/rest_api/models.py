@@ -1,4 +1,3 @@
-from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -17,7 +16,8 @@ class Place(models.Model):
     A geographical location that can have webcams and weather forecasts.
     """
     name = models.CharField(max_length=255)
-    geolocation = gis_models.PointField()  # PointField for latitude and longitude
+    latitude = models.FloatField()  # Latitude coordinate
+    longitude = models.FloatField()  # Longitude coordinate
     description = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=100)
     nearest_city = models.CharField(max_length=100, blank=True, null=True)
@@ -25,6 +25,9 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_geolocation(self):
+        return (self.latitude, self.longitude)
 
 
 class Webcam(models.Model):

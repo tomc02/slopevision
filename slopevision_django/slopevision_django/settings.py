@@ -15,6 +15,7 @@ from pathlib import Path
 
 from google.oauth2 import service_account
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,11 +91,15 @@ WSGI_APPLICATION = 'slopevision_django.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': tmpPostgres.path.replace('/', ''),
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
     },
     'old_db': {
         'ENGINE': 'django.contrib.gis.db.backends.spatialite',
@@ -181,13 +186,6 @@ GS_FILE_OVERWRITE = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LEAFLET_CONFIG = {
-    'DEFAULT_TILE_LAYER': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    'DEFAULT_TILE_LAYER_ATTR': 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    'DEFAULT_CENTER': (49.437315, 18.78643),  # Latitude and longitude of the center of the map
-    'DEFAULT_ZOOM': 11,  # Default zoom level
-}
 
 # DRF Spectacular Settings
 REST_FRAMEWORK = {
