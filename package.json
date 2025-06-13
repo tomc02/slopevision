@@ -5,9 +5,9 @@
     "vue-frontend"
   ],
   "scripts": {
-    "serve-vue": "npm run serve --workspace=vue-frontend",
-    "dev-vue": "npm run dev --workspace=vue-frontend",
-    "build-vue": "npm run build --workspace=vue-frontend"
+    "serve": "npm run serve --workspace=vue-frontend",
+    "dev": "npm run dev --workspace=vue-frontend",
+    "build": "npm run build --workspace=vue-frontend"
   },
   "devDependencies": {
     "postcss": "^8.4.49",
