@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-fit py-8">
-    <div class="container mx-auto px-4">
+  <div class="py-8 min-h-fit">
+    <div class="mx-auto px-4 container">
       <!-- Page Title -->
-      <h1 class="text-3xl font-bold mb-8 text-center">
+      <h1 class="mb-8 font-bold text-3xl text-center">
         Places Overview
       </h1>
 
@@ -10,33 +10,33 @@
       <div class="mb-6 text-center">
         <input
             v-model="searchQuery"
-            class="p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 w-3/4 sm:w-1/2"
+            class="dark:bg-gray-800 p-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-3/4 sm:w-1/2 dark:text-gray-100"
             placeholder="Search places..."
             type="text"
         />
       </div>
 
       <!-- Places Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <router-link
             v-for="place in filteredPlaces"
             :key="place.id"
             :to="{ name: 'PlaceDetail', params: { id: place.id } }"
-            class="bg-item-light-bg dark:bg-item-dark-bg rounded-lg shadow-lg overflow-hidden relative transition-transform transform hover:scale-105"
+            class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform transform"
         >
           <WebcamVideo :altText="place.name" :url="place.firstWebcam" style="pointer-events: none"/>
 
           <!-- Place Details -->
           <div class="p-4">
-            <h2 class="text-xl font-semibold text-primary-light dark:text-primary-dark">{{ place.name }}</h2>
-            <p class="text-secondary-light dark:text-secondary-dark mt-2 text-sm line-clamp-3">
+            <h2 class="font-semibold text-primary-light dark:text-primary-dark text-xl">{{ place.name }}</h2>
+            <p class="mt-2 text-secondary-light dark:text-secondary-dark text-sm line-clamp-3">
               {{ place.description || "No description available." }}
             </p>
           </div>
 
           <!-- Favorite Button -->
           <button
-              class="absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-transparent "
+              class="right-4 bottom-4 absolute flex justify-center items-center bg-transparent shadow-md rounded-full w-10 h-10"
               @click.stop.prevent="toggleFavorite(place.id)"
           >
             <HeartIcon
@@ -55,6 +55,7 @@
 import {computed, onMounted, ref} from "vue";
 import WebcamVideo from "@/components/WebcamVideo.vue";
 import {HeartIcon} from '@heroicons/vue/24/outline';
+import {API_URL} from '@/config';
 
 export default {
   name: "PlaceOverview",
@@ -65,7 +66,7 @@ export default {
     const favorites = ref(new Set()); // Track favorites as a Set for quick lookup.
 
     const fetchPlaces = async () => {
-      const response = await fetch(`/api/places/`, {method: "GET"});
+      const response = await fetch(`${API_URL}/api/places/`, {method: "GET"});
       const data = await response.json();
       for (let i = 0; i < data.length; i++) {
         data[i].firstWebcam = await fetchFirstWebcam(data[i].id);
@@ -74,7 +75,7 @@ export default {
     };
 
     const fetchFirstWebcam = async (placeId) => {
-      const response = await fetch(`/api/places/${placeId}/webcams/`);
+      const response = await fetch(`${API_URL}/api/places/${placeId}/webcams/`);
       const data = await response.json();
       return data[0]?.url || "";
     };

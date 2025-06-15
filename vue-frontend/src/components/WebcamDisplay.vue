@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center items-center">
     <div v-if="webcams.length"
-         class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg rounded-t-lg w-full max-w-6xl 3xl:max-w-screen-2xl overflow-hidden">
+         class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg rounded-t-lg w-full 3xl:max-w-screen-2xl max-w-6xl overflow-hidden">
       <!-- Webcam Image or History -->
       <div ref="webcamContainer" class="relative">
         <div v-if="selectedHistory">
@@ -14,14 +14,14 @@
         <div class="absolute inset-0 flex justify-between items-center pointer-events-none">
           <!-- Left Arrow -->
           <button
-              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-60 transform transition-transform duration-200 hover:scale-110 ml-2"
+              class="bg-white bg-opacity-10 hover:bg-opacity-60 ml-2 p-4 rounded-full hover:scale-110 transition-transform duration-200 pointer-events-auto transform"
               @click="prevWebcam">
             <ChevronLeftIcon class="w-6 h-6"/>
           </button>
 
           <!-- Right Arrow -->
           <button
-              class="pointer-events-auto p-4 bg-white bg-opacity-10 rounded-full hover:bg-opacity-60 transform transition-transform duration-200 hover:scale-110 mr-2"
+              class="bg-white bg-opacity-10 hover:bg-opacity-60 mr-2 p-4 rounded-full hover:scale-110 transition-transform duration-200 pointer-events-auto transform"
               @click="nextWebcam">
             <ChevronRightIcon class="w-6 h-6"/>
           </button>
@@ -30,30 +30,30 @@
         <!-- Fullscreen Button -->
         <button
             v-if="!isVideo(currentWebcam.url)"
-            class="absolute bottom-2 right-2 p-2 bg-gray-800 bg-opacity-70 text-white rounded-full hover:bg-opacity-100 transform transition-transform duration-200 hover:scale-110"
+            class="right-2 bottom-2 absolute bg-gray-800 bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full text-white hover:scale-110 transition-transform duration-200 transform"
             @click="toggleFullscreen">
           <ArrowsPointingOutIcon class="w-6 h-6"/>
         </button>
       </div>
 
       <!-- Webcam Details & History Chooser in One Row on larger screens, stacked on mobile -->
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-6">
+      <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center p-6">
         <div class="flex flex-col w-full sm:w-1/2">
-          <h3 class="text-2xl font-semibold text-primary-light dark:text-primary-dark">
+          <h3 class="font-semibold text-primary-light dark:text-primary-dark text-2xl">
             {{ currentWebcam.name }}
           </h3>
-          <p class="text-secondary-light dark:text-secondary-dark mt-2">
+          <p class="mt-2 text-secondary-light dark:text-secondary-dark">
             {{ currentWebcam.description || "No description available." }}
           </p>
         </div>
 
         <!-- Webcam History Time Picker (right side on larger screens, below on mobile) -->
-        <div class="flex justify-start sm:justify-end w-full sm:w-1/2 mt-4 sm:mt-0 flex-wrap h-full ">
+        <div class="flex flex-wrap justify-start sm:justify-end mt-4 sm:mt-0 w-full sm:w-1/2 h-full">
           <DateTimePicker ref="dateTimePickerRef" :webcamId="currentWebcam.id"
-                          class="w-full sm:w-auto mt-2"
+                          class="mt-2 w-full sm:w-auto"
                           @date-time-selected="handleDateTimeSelected" @date-selected="handleDateSelected"/>
           <button
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded flex items-center justify-center w-full sm:w-auto mb-0.5 lg:ml-2 mt-2 sm:mt-10 max-h-10"
+              class="flex justify-center items-center bg-blue-500 hover:bg-blue-700 mt-2 sm:mt-10 mb-0.5 lg:ml-2 px-5 py-2 rounded w-full sm:w-auto max-h-10 font-bold text-white"
               @click="switchToLive">
             LIVE
           </button>
@@ -73,6 +73,7 @@ import WebcamVideo from "@/components/WebcamVideo.vue";
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import {isVideo} from "@/utils";
 import {ArrowsPointingOutIcon, ChevronLeftIcon, ChevronRightIcon} from "@heroicons/vue/24/outline";
+import {API_URL} from '@/config';
 
 export default {
   name: "WebcamDisplay",
@@ -93,7 +94,7 @@ export default {
 
     const fetchWebcams = async () => {
       try {
-        const response = await fetch(`/api/places/${props.placeId}/webcams`);
+        const response = await fetch(`${API_URL}/api/places/${props.placeId}/webcams`);
         if (response.ok) {
           webcams.value = await response.json();
         } else {
@@ -108,7 +109,7 @@ export default {
       if (webcams.value.length > 0) {
         const webcamId = webcams.value[currentIndex.value].id;
         try {
-          const response = await fetch(`/api/webcams/${webcamId}/history/?date=${selectedDate.value}`);
+          const response = await fetch(`${API_URL}/api/webcams/${webcamId}/history/?date=${selectedDate.value}`);
           if (response.ok) {
             history.value = await response.json();
           } else {

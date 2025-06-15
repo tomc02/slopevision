@@ -65,7 +65,7 @@ const actions = {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await AuthService.getUser();
+                const response = await AuthService.getUserDetails();
                 commit('SET_USER', response.data);
             } catch {
                 localStorage.removeItem('token');

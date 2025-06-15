@@ -8,6 +8,7 @@
 import WebcamDisplay from "../components/WebcamDisplay.vue";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { API_URL } from '@/config';
 export default {
   name: "PlaceDetail",
   components: { WebcamDisplay },
@@ -17,7 +18,7 @@ export default {
     const placeName = ref("");
 
     const fetchPlaceDetails = async () => {
-      const response = await fetch(`/api/places/${placeId.value}`); // Replace with actual API
+      const response = await fetch(`${API_URL}/api/places/${placeId.value}`); // Replace with actual API
       const data = await response.json();
       placeName.value = data.name;
     };

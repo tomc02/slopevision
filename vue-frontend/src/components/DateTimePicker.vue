@@ -1,12 +1,12 @@
 <template>
   <div class="relative w-full">
-    <label class="block text-secondary-light dark:text-secondary-dark font-semibold mb-1.5" for="datetime-picker">
+    <label class="block mb-1.5 font-semibold text-secondary-light dark:text-secondary-dark" for="datetime-picker">
       Choose Webcam History Time
     </label>
     <div class="flex items-center space-x-2">
       <!-- Previous Date Button -->
       <button
-          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-secondary-light dark:bg-item-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="bg-item-secondary-light hover:bg-gray-200 dark:hover:bg-gray-600 dark:bg-item-secondary-dark p-2 border border-secondary-dark dark:border-secondary-light rounded-md text-primary-light dark:text-primary-dark"
           @click="changeDate(-1)"
       >
         <ChevronLeftIcon class="w-4 h-6"/>
@@ -17,14 +17,14 @@
           id="datetime-picker"
           ref="flatpickr"
           v-model="selectedDate"
-          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-light-bg dark:bg-item-dark-bg w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          class="bg-item-light-bg dark:bg-item-dark-bg p-2 border border-secondary-dark dark:border-secondary-light rounded-md focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 w-32 text-primary-light dark:text-primary-dark"
           placeholder="Select Date"
           type="text"
       />
 
       <!-- Next Date Button -->
       <button
-          class="border border-secondary-dark dark:border-secondary-light rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-secondary-light dark:bg-item-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600"
+          class="bg-item-secondary-light hover:bg-gray-200 dark:hover:bg-gray-600 dark:bg-item-secondary-dark p-2 border border-secondary-dark dark:border-secondary-light rounded-md text-primary-light dark:text-primary-dark"
           @click="changeDate(1)"
       >
         <ChevronRightIcon class="w-4 h-6"/>
@@ -33,7 +33,7 @@
       <!-- Time picker select -->
       <select v-model="selectedTime"
               :disabled="!Object.keys(availableTimes).length"
-              class="border border-gray-300 dark:border-gray-600 rounded-md p-2 text-primary-light dark:text-primary-dark bg-item-light-bg dark:bg-item-dark-bg w-32 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+              class="bg-item-light-bg dark:bg-item-dark-bg p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 w-32 text-primary-light dark:text-primary-dark">
         <option v-for="(timestamp, time) in availableTimes" :key="time" :value="time">
           {{ time }}
         </option>
@@ -42,7 +42,7 @@
     </div>
 
     <!-- Error message display -->
-    <p v-if="errorMessage" class="text-red-500 dark:text-red-400 text-sm mt-2">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="mt-2 text-red-500 dark:text-red-400 text-sm">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -51,6 +51,7 @@ import flatpickr from 'flatpickr'; // Import Flatpickr
 import 'flatpickr/dist/flatpickr.min.css'; // Import Flatpickr styles
 import 'flatpickr/dist/themes/dark.css';
 import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/vue/24/outline";
+import { API_URL } from '@/config';
 
 export default {
   components: {ChevronLeftIcon, ChevronRightIcon},
@@ -72,7 +73,7 @@ export default {
     async fetchAvailableTimes(date) {
       this.availableTimes = {};
       try {
-        const response = await fetch(`/api/webcams/${this.webcamId}/history?date=${date}&times=true`);
+        const response = await fetch(`${API_URL}/api/webcams/${this.webcamId}/history?date=${date}&times=true`);
         const data = await response.json();
         if (Object.keys(data).length) {
           this.availableTimes = data;
