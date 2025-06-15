@@ -4,9 +4,7 @@ django-timezone-field
 djangorestframework
 Pillow
 django-cors-headers
-leaflet
 drf_spectacular
-django-leaflet
 gunicorn
 python-dotenv
 requests
@@ -18,3 +16,4 @@ django-storages
 google-cloud-storage
 django-allauth
 dj-rest-auth
+psycopg2-binary==2.9.10

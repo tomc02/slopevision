@@ -8,6 +8,8 @@ from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySeriali
 from dj_rest_auth.views import UserDetailsView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CustomUserSerializer
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 
 @extend_schema_view(
     list=extend_schema(
@@ -116,3 +118,11 @@ class WebcamHistoryViewSet(viewsets.ModelViewSet):
 class CustomUserDetailsView(UserDetailsView):
     permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
     serializer_class = CustomUserSerializer  # Use your custom serializer
+
+@extend_schema(
+    description="Retrieve a CSRF token for the current session.",
+    responses={200: OpenApiResponse(description="CSRF token for the session.")}
+)
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})
