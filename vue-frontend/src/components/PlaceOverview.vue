@@ -18,7 +18,7 @@
 				<router-link v-for="place in filteredPlaces" :key="place.id"
 					:to="{ name: 'PlaceDetail', params: { id: place.id } }"
 					class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform transform">
-					<WebcamVideo :altText="place.name" :url="place.firstWebcam" style="pointer-events: none" />
+					<WebcamVideo :altText="place.name" :url="place.first_webcam" style="pointer-events: none" />
 
 					<!-- Place Details -->
 					<div class="p-4">
@@ -52,10 +52,17 @@ import { API_URL } from '@/config';
 import api from "@/services/api";
 import store from '../store';
 
+
 export default {
 	name: "PlaceOverview",
 	components: { WebcamVideo, HeartIcon },
-	setup() {
+	props: {
+		showOnlyFavorites: {
+			type: Boolean,
+			default: false,
+		}
+	},
+	setup(props) {
 		const places = ref([]);
 		const searchQuery = ref("");
 		const favorites = ref(new Set()); // Track favorites as a Set for quick lookup.
@@ -63,25 +70,18 @@ export default {
 		const fetchPlaces = async () => {
 			const response = await fetch(`${API_URL}/api/places/`, { method: "GET" });
 			const data = await response.json();
-			// get user from store by GET_USER
-			const user = computed(() => store.getters['auth/currentUser'] || 'User');
-			favorites.value = new Set(user.value.favorite_places.map(id => id));
+			await store.dispatch('auth/rehydrateState');
+			const user = store.getters['auth/currentUser'] || 'User';
+			favorites.value = new Set(user.favorite_places.map(id => id));
 
-			for (let i = 0; i < data.length; i++) {
-				data[i].firstWebcam = await fetchFirstWebcam(data[i].id);
-			}
 			places.value = data;
 		};
 
-		const fetchFirstWebcam = async (placeId) => {
-			const response = await fetch(`${API_URL}/api/places/${placeId}/webcams/`);
-			const data = await response.json();
-			return data[0]?.url || "";
-		};
 
 		const filteredPlaces = computed(() =>
 			places.value.filter((place) =>
-				place.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+				place.name.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+				(props.showOnlyFavorites ? isFavorite(place.id) : true)
 			)
 		);
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PlaceOverview />
+    <PlaceOverview :showOnlyFavorites="false" />
   </div>
 </template>
 
