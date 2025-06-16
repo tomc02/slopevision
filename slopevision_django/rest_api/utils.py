@@ -48,7 +48,7 @@ def find_video_url(page_url):
     else:
         try:
             # Fetch the page content
-            response = requests.get(page_url)
+            response = requests.get(page_url, verify=False)
             response.raise_for_status()  # Raise an error for bad status codes
 
             # Search for the first .mp4 URL in the page source
