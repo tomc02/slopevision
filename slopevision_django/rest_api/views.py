@@ -11,6 +11,7 @@ from .serializers import CustomUserSerializer
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
+from .management.commands import fetch_video_urls, fetch_hzs_images, save_history
 
 @extend_schema_view(
     list=extend_schema(
@@ -153,3 +154,14 @@ class RemoveFavoritePlaceView(APIView):
             return Response({'status': 'Place removed from favorites'}, status=status.HTTP_200_OK)
         except Place.DoesNotExist:
             return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+class FetchWebcamDataView(APIView):
+    def post(self, request):
+        fetch_video_urls.Command().handle()
+        #fetch_hzs_images.Command().handle()
+        return Response({'status': 'Webcam data fetched'}, status=status.HTTP_200_OK)
+
+class SaveHistoryView(APIView):
+    def post(self, request):
+        save_history.Command().handle()
+        return Response({'status': 'History saved'}, status=status.HTTP_200_OK)
