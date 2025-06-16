@@ -7,23 +7,25 @@ from dj_rest_auth.serializers import UserDetailsSerializer
 class PlaceSerializer(serializers.ModelSerializer):
     # Nested serializer for webcams (weather data and forecasts have been removed as per your instruction)
     webcams = serializers.StringRelatedField(many=True)
+    first_webcam = serializers.SerializerMethodField()
+
+    def get_first_webcam(self, obj):
+        first_webcam = obj.webcams.first()
+        if first_webcam is None:
+            return ''
+        return first_webcam.url
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'webcams']
+        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'webcams', 'first_webcam']
 
 
 class WebcamSerializer(serializers.ModelSerializer):
-    # If source_url is not provided, provide a link to the image instead (as url field)
-    url = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField()
 
     class Meta:
         model = Webcam
         fields = ['id', 'place', 'name', 'url', 'source_type', 'source_url', 'page_url', 'img_page_url', 'img_tag_id', 'last_updated', 'history_rate']
-
-    def get_url(self, obj):
-        # If source_url is provided, use it, otherwise return a fallback
-        return obj.source_url if obj.source_url else f"/media/{obj.img_page_url}/{obj.img_tag_id}"
 
 
 class WebcamHistorySerializer(serializers.ModelSerializer):

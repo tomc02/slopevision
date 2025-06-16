@@ -72,6 +72,10 @@ class Webcam(models.Model):
         help_text="Time interval in minutes for history updates (e.g., every 30 minutes)."
     )
 
+    @property
+    def url(self):
+        return self.source_url if self.source_url else f"/media/{self.img_page_url}/{self.img_tag_id}"
+
     def __str__(self):
         return self.name
 
