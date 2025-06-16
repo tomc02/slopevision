@@ -15,21 +15,28 @@
 
 			<!-- Places Grid -->
 			<div class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-				<router-link v-for="place in filteredPlaces" :key="place.id" :to="{ name: 'PlaceDetail', params: { id: place.id } }"
+				<router-link v-for="place in filteredPlaces" :key="place.id"
+					:to="{ name: 'PlaceDetail', params: { id: place.id } }"
 					class="relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform transform">
 					<WebcamVideo :altText="place.name" :url="place.firstWebcam" style="pointer-events: none" />
 
 					<!-- Place Details -->
 					<div class="p-4">
-						<h2 class="font-semibold text-primary-light dark:text-primary-dark text-xl">{{ place.name }}</h2>
+						<h2 class="font-semibold text-primary-light dark:text-primary-dark text-xl">{{ place.name }}
+						</h2>
 						<p class="mt-2 text-secondary-light dark:text-secondary-dark text-sm line-clamp-3">
 							{{ place.description || "No description available." }}
 						</p>
 					</div>
 
 					<!-- Favorite Button -->
-					<button class="right-4 bottom-4 absolute flex justify-center items-center bg-transparent shadow-md rounded-full w-10 h-10" @click.stop.prevent="toggleFavorite(place.id)">
-						<HeartIcon :class="isFavorite(place.id) ? 'text-red-500' : 'text-gray-400'" :filled="isFavorite(place.id)" class="w-6 h-6" />
+					<button
+						class="right-4 bottom-4 absolute flex justify-center items-center bg-transparent rounded-full w-10 h-10 border-0 shadow-none"
+						@click.stop.prevent="toggleFavorite(place.id)">
+						<HeartIcon :class="[
+							'w-6 h-6',
+							isFavorite(place.id) ? 'text-red-500 fill-current' : 'text-gray-400 fill-none'
+						]" />
 					</button>
 				</router-link>
 			</div>
@@ -58,16 +65,11 @@ export default {
 			const data = await response.json();
 			// get user from store by GET_USER
 			const user = computed(() => store.getters['auth/currentUser'] || 'User');
-			console.log("User data:", user.value.favorite_places);
-			const favoritePlaceIds = user.value.favorite_places.map(place => place.id);
-			
-			favorites.value = new Set(favoritePlaceIds); // Initialize favorites from user data
+			favorites.value = new Set(user.value.favorite_places.map(id => id));
 
 			for (let i = 0; i < data.length; i++) {
 				data[i].firstWebcam = await fetchFirstWebcam(data[i].id);
-				data[i].isFavorite = favorites.value.has(data[i].id);
 			}
-			console.log("Fetched places:", data);
 			places.value = data;
 		};
 
