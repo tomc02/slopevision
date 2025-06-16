@@ -1,15 +1,16 @@
 from datetime import datetime, timedelta
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
-from .models import Place, Webcam, WebcamHistory
+from .models import CustomUser, Place, Webcam, WebcamHistory
 from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySerializer
 from dj_rest_auth.views import UserDetailsView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CustomUserSerializer
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from rest_framework.views import APIView
 
 @extend_schema_view(
     list=extend_schema(
@@ -126,3 +127,29 @@ class CustomUserDetailsView(UserDetailsView):
 def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
+
+
+class AddFavoritePlaceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, place_id):
+        user = request.user
+        try:
+            place = Place.objects.get(pk=place_id)
+            user.favorite_places.add(place)
+            return Response({'status': 'Place added to favorites'}, status=status.HTTP_200_OK)
+        except Place.DoesNotExist:
+            return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class RemoveFavoritePlaceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, place_id):
+        user = request.user
+        try:
+            place = Place.objects.get(pk=place_id)
+            user.favorite_places.remove(place)
+            return Response({'status': 'Place removed from favorites'}, status=status.HTTP_200_OK)
+        except Place.DoesNotExist:
+            return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)

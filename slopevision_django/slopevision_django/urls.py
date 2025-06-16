@@ -5,7 +5,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
-from rest_api.views import PlaceViewSet, WebcamViewSet, WebcamHistoryViewSet, CustomUserDetailsView, get_csrf_token
+from rest_api.views import PlaceViewSet, WebcamViewSet, WebcamHistoryViewSet, CustomUserDetailsView, get_csrf_token, AddFavoritePlaceView, RemoveFavoritePlaceView
 
 # Create the router
 router = DefaultRouter()
@@ -19,6 +19,8 @@ urlpatterns = [path('admin/', admin.site.urls), path('api/', include(router.urls
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),  # Swagger UI
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration endpoints
     path('api/auth/user/', CustomUserDetailsView.as_view(), name='user-details'),
+	path('api/auth/user/add-favorites/<int:place_id>/', AddFavoritePlaceView.as_view(), name='add-favorite'),
+    path('api/auth/user/remove-favorites/<int:place_id>/', RemoveFavoritePlaceView.as_view(), name='remove-favorite'),
     path('api/auth/', include('dj_rest_auth.urls')),  # Authentication endpoints
     path('api/csrf/', get_csrf_token, name='get_csrf_token'),
 ]
