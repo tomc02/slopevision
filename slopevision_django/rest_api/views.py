@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from .management.commands import fetch_video_urls, fetch_hzs_images, save_history
+import threading
 
 @extend_schema_view(
     list=extend_schema(
@@ -157,11 +158,21 @@ class RemoveFavoritePlaceView(APIView):
         
 class FetchWebcamDataView(APIView):
     def post(self, request):
-        fetch_video_urls.Command().handle()
-        #fetch_hzs_images.Command().handle()
-        return Response({'status': 'Webcam data fetched'}, status=status.HTTP_200_OK)
+        # Define the task
+        def run_task():
+            fetch_video_urls.Command().handle()
+            # fetch_hzs_images.Command().handle()
+
+        # Start in a separate thread
+        threading.Thread(target=run_task).start()
+
+        return Response({'status': 'Webcam data fetching started'}, status=status.HTTP_200_OK)
 
 class SaveHistoryView(APIView):
     def post(self, request):
-        save_history.Command().handle()
-        return Response({'status': 'History saved'}, status=status.HTTP_200_OK)
+        def run_task():
+            save_history.Command().handle()
+
+        threading.Thread(target=run_task).start()
+
+        return Response({'status': 'History saving started'}, status=status.HTTP_200_OK)
