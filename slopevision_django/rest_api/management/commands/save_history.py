@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.options import Options
 
 from rest_api.models import Webcam, WebcamHistory
 import pytz
+from django.db import connection
 
 
 class Command(BaseCommand):
@@ -35,14 +36,17 @@ class Command(BaseCommand):
             url = webcam.source_url
 
             if not url:
-                self.stdout.write(f"Skipping webcam '{webcam.name}' (ID: {webcam.id}) - No URL provided.")
+                self.stdout.write(
+                    f"Skipping webcam '{webcam.name}' (ID: {webcam.id}) - No URL provided.")
                 continue
 
             try:
+                connection.ensure_connection()
                 if self._is_embed_url(url):
                     self._capture_embed_screenshot(webcam, url)
                 else:
-                    response = requests.get(url, stream=True, verify=False)  # Ignore SSL certificate errors
+                    # Ignore SSL certificate errors
+                    response = requests.get(url, stream=True, verify=False)
                     response.raise_for_status()
 
                     content_type = response.headers.get('Content-Type', '')
@@ -51,9 +55,12 @@ class Command(BaseCommand):
                     file_name = f"{webcam.id}_{timestamp}{file_extension}" if file_extension else f"{webcam.id}_{timestamp}"
 
                     if 'image' in content_type:
-                        self._save_file_to_gcs(response, f'webcam_images/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, image=f'webcam_images/{file_name}', timestamp=prague_now)
-                        self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
+                        self._save_file_to_gcs(
+                            response, f'webcam_images/{file_name}')
+                        WebcamHistory.objects.create(
+                            webcam=webcam, image=f'webcam_images/{file_name}', timestamp=prague_now)
+                        self.stdout.write(
+                            f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
 
                     elif 'video' in content_type:
                         # Save video locally
@@ -65,11 +72,14 @@ class Command(BaseCommand):
 
                         # Compress video using ffmpeg
                         compressed_video_path = f'/tmp/compressed_{file_name}'
-                        self._compress_video(local_video_path, compressed_video_path)
+                        self._compress_video(
+                            local_video_path, compressed_video_path)
 
                         # Upload compressed video to Google Cloud Storage
-                        self._save_file_to_gcs_with_local_path(compressed_video_path, f'webcam_videos/{file_name}')
-                        WebcamHistory.objects.create(webcam=webcam, video=f'webcam_videos/{file_name}', timestamp=prague_now)
+                        self._save_file_to_gcs_with_local_path(
+                            compressed_video_path, f'webcam_videos/{file_name}')
+                        WebcamHistory.objects.create(
+                            webcam=webcam, video=f'webcam_videos/{file_name}')
                         self.stdout.write(
                             f"Saved and uploaded compressed video for webcam '{webcam.name}' (ID: {webcam.id}).")
 
@@ -83,15 +93,21 @@ class Command(BaseCommand):
                             if ret:
                                 file_name = f'webcam_images/{webcam.id}_{timestamp}.jpg'
                                 self._save_frame_to_gcs(frame, file_name)
-                                WebcamHistory.objects.create(webcam=webcam, image=file_name, timestamp=prague_now)
-                                self.stdout.write(f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
+                                WebcamHistory.objects.create(
+                                    webcam=webcam, image=file_name)
+                                self.stdout.write(
+                                    f"Saved image for webcam '{webcam.name}' (ID: {webcam.id}).")
                             else:
                                 self.stdout.write(
                                     f"Failed to capture frame for webcam '{webcam.name}' (ID: {webcam.id}).")
                             cap.release()
 
             except requests.RequestException as e:
-                self.stderr.write(f"Failed to fetch URL for webcam '{webcam.name}' (ID: {webcam.id}): {e}")
+                self.stderr.write(
+                    f"Failed to fetch URL for webcam '{webcam.name}' (ID: {webcam.id}): {e}")
+            finally:
+                # Ensure the connection is closed after each webcam processing
+                connection.close()
 
     def _is_embed_url(self, url):
         """Check if the URL is an embedded content page."""
@@ -118,13 +134,23 @@ class Command(BaseCommand):
             # Save screenshot to Google Cloud Storage
             self._save_bytes_to_gcs(png, file_name)
 
-        WebcamHistory.objects.create(webcam=webcam, image=file_name, timestamp=prague_now)
-        self.stdout.write(f"Saved screenshot for embedded webcam '{webcam.name}' (ID: {webcam.id}).")
+        try:
+            connection.ensure_connection()
+            WebcamHistory.objects.create(
+                webcam=webcam, image=file_name, timestamp=prague_now)
+            self.stdout.write(
+                f"Saved screenshot for embedded webcam '{webcam.name}' (ID: {webcam.id}).")
+        except Exception as e:
+            self.stderr.write(
+                f"Failed to save screenshot for embedded webcam '{webcam.name}' (ID: {webcam.id}): {e}")
+        finally:
+            connection.close()
 
     def _save_file_to_gcs(self, response, file_name):
         """Upload streamed content to Google Cloud Storage."""
         blob = self.bucket.blob(file_name)
-        blob.upload_from_file(response.raw, content_type=response.headers.get('Content-Type'))
+        blob.upload_from_file(
+            response.raw, content_type=response.headers.get('Content-Type'))
         self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
 
     def _save_frame_to_gcs(self, frame, file_name):
@@ -143,15 +169,19 @@ class Command(BaseCommand):
     def _compress_video(self, input_path, output_path):
         """Compress video using ffmpeg."""
         # f'ffmpeg -i {full_path} -vf "scale=640:-1,fps=10" -c:v libx264 -crf 35 -an {compressed_path}')
-        cmd = ['ffmpeg', '-i', input_path, '-vf', 'scale=640:-1,fps=10', '-c:v', 'libx264', '-crf', '35', '-an', output_path]
+        cmd = ['ffmpeg', '-i', input_path, '-vf', 'scale=640:-1,fps=10',
+               '-c:v', 'libx264', '-crf', '35', '-an', output_path]
         # Wait for the process to finish and check for errors
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        result = subprocess.run(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
 
         # Ensure that the process completes successfully
         if result.returncode == 0:
-            self.stdout.write(f"Video compression finished. Compressed video saved to {output_path}.")
+            self.stdout.write(
+                f"Video compression finished. Compressed video saved to {output_path}.")
         else:
-            self.stderr.write(f"Error compressing video: {result.stderr.decode()}")
+            self.stderr.write(
+                f"Error compressing video: {result.stderr.decode()}")
 
     def _save_file_to_gcs_with_local_path(self, local_path, file_name):
         """Upload a local file to Google Cloud Storage."""
@@ -161,4 +191,5 @@ class Command(BaseCommand):
             blob.upload_from_filename(local_path)
             self.stdout.write(f"Uploaded {file_name} to Google Cloud Storage.")
         else:
-            self.stderr.write(f"File {local_path} does not exist, skipping upload.")
+            self.stderr.write(
+                f"File {local_path} does not exist, skipping upload.")

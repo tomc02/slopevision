@@ -158,21 +158,16 @@ class RemoveFavoritePlaceView(APIView):
         
 class FetchWebcamDataView(APIView):
     def post(self, request):
-        # Define the task
-        def run_task():
-            fetch_video_urls.Command().handle()
-            # fetch_hzs_images.Command().handle()
+        # Execute the task synchronously
+        fetch_video_urls.Command().handle()
+        # fetch_hzs_images.Command().handle()
 
-        # Start in a separate thread
-        threading.Thread(target=run_task).start()
+        return Response({'status': 'Webcam data fetching completed'}, status=status.HTTP_200_OK)
 
-        return Response({'status': 'Webcam data fetching started'}, status=status.HTTP_200_OK)
 
 class SaveHistoryView(APIView):
     def post(self, request):
-        def run_task():
-            save_history.Command().handle()
+        # Execute the task synchronously
+        save_history.Command().handle()
 
-        threading.Thread(target=run_task).start()
-
-        return Response({'status': 'History saving started'}, status=status.HTTP_200_OK)
+        return Response({'status': 'History saving completed'}, status=status.HTTP_200_OK)

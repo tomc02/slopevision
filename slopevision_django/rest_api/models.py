@@ -92,7 +92,7 @@ class WebcamHistory(models.Model):
         ]
 
     webcam = models.ForeignKey(Webcam, on_delete=models.CASCADE, related_name='history')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True, help_text="Timestamp of the snapshot")
     image = models.ImageField(upload_to='webcam_images', blank=True, null=True)
     video = models.FileField(upload_to='webcam_videos', blank=True, null=True)
 
