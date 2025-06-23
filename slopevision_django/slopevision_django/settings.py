@@ -19,8 +19,8 @@ from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-ENV_PATH = Path(BASE_DIR).resolve() / '.env'
-load_dotenv(dotenv_path=ENV_PATH)
+ENV_PATH = Path(BASE_DIR, '.env')
+load_dotenv(dotenv_path=ENV_PATH, override=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -98,7 +98,10 @@ DATABASES = {
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
         'PORT': 5432,
-		'CONN_MAX_AGE': 600,
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
@@ -154,8 +157,8 @@ SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True  # Only send session cookie over HTTPS
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
-#STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # MEDIA_URL = '/media/'  # This is the URL for accessing media files (e.g., /media/images/photo.jpg)
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored on your server
@@ -210,7 +213,8 @@ REST_FRAMEWORK = {
 SITE_ID = 1
 
 # Allauth Configuration
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Allow login with username or email
+# Allow login with username or email
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # 'mandatory', 'optional', or 'none'
 ACCOUNT_USERNAME_REQUIRED = True
