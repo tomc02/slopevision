@@ -17,7 +17,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'webcams', 'first_webcam']
+        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'webcams', 'first_webcam', 'country', 'nearest_city', 'mounain_range']
 
 
 class WebcamSerializer(serializers.ModelSerializer):
