@@ -31,7 +31,7 @@
 
 					<!-- Favorite Button -->
 					<button
-						class="right-4 bottom-4 absolute flex justify-center items-center bg-transparent rounded-full w-10 h-10 border-0 shadow-none"
+						class="right-4 bottom-4 absolute flex justify-center items-center bg-transparent shadow-none border-0 rounded-full w-10 h-10"
 						@click.stop.prevent="toggleFavorite(place.id)">
 						<HeartIcon :class="[
 							'w-6 h-6',
@@ -70,10 +70,10 @@ export default {
 		const fetchPlaces = async () => {
 			const response = await fetch(`${API_URL}/api/places/`, { method: "GET" });
 			const data = await response.json();
-			await store.dispatch('auth/rehydrateState');
-			const user = store.getters['auth/currentUser'] || 'User';
-			favorites.value = new Set(user.favorite_places.map(id => id));
-
+			store.dispatch('auth/rehydrateState').then(() => {
+				const user = store.getters['auth/currentUser'] || 'User';
+				favorites.value = new Set(user.favorite_places.map(id => id));
+			});
 			places.value = data;
 		};
 
