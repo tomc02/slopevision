@@ -2,7 +2,7 @@
 
 # Load environment variables from .env file
 set -o allexport
-source ../.env
+source .env
 set +o allexport
 
 # Check if --build flag is provided

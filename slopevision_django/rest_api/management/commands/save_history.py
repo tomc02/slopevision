@@ -82,6 +82,10 @@ class Command(BaseCommand):
                             webcam=webcam, video=f'webcam_videos/{file_name}')
                         self.stdout.write(
                             f"Saved and uploaded compressed video for webcam '{webcam.name}' (ID: {webcam.id}).")
+                        
+                        # Clean up local files
+                        os.remove(local_video_path)
+                        os.remove(compressed_video_path)
 
                     else:
                         cap = cv2.VideoCapture(url)
