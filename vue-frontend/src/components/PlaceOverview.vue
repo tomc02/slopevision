@@ -34,7 +34,7 @@
 				<div v-if="showFilters" class="bg-gray-50 dark:bg-gray-800 shadow-sm mb-6 p-4 rounded-lg">
 					<div class="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 						<!-- Search -->
-						<div>
+						<div class="md:col-span-2 lg:col-span-4">
 							<label class="block mb-1 font-medium text-sm">Search</label>
 							<input v-model="searchQuery"
 								class="dark:bg-gray-800 p-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full dark:text-gray-100"

@@ -77,6 +77,13 @@ export default {
         const data = await response.json();
         if (Object.keys(data).length) {
           this.availableTimes = data;
+          // format available times to display in the select dropdown
+          this.availableTimes = Object.fromEntries(
+            Object.entries(this.availableTimes).map(([time, timestamp]) => [
+              new Date(timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: false}),
+              timestamp
+            ])
+          );
           this.errorMessage = '';
         } else {
           this.availableTimes = {};
