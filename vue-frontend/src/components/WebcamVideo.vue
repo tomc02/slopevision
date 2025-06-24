@@ -5,7 +5,8 @@
               frameborder="0"></iframe>
     </template>
     <template v-else-if="isVideoUrl">
-      <video :src="url" autoplay class="w-full object-cover aspect-video" controls loop muted></video>
+      <video :src="url" autoplay class="w-full object-cover aspect-video" 
+             :controls="controls" loop muted></video> <!-- Use :controls to bind prop -->
     </template>
     <template v-else>
       <img :alt="altText" :src="url" class="w-full object-cover aspect-video"/>
@@ -23,6 +24,10 @@ export default {
     altText: {
       type: String,
       default: ''
+    },
+    controls: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
