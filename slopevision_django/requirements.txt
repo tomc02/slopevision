@@ -17,3 +17,4 @@ google-cloud-storage
 django-allauth
 dj-rest-auth
 psycopg2-binary==2.9.10
+playwright

@@ -160,7 +160,7 @@ class FetchWebcamDataView(APIView):
     def post(self, request):
         # Execute the task synchronously
         fetch_video_urls.Command().handle()
-        # fetch_hzs_images.Command().handle()
+        fetch_hzs_images.Command().handle()
 
         return Response({'status': 'Webcam data fetching completed'}, status=status.HTTP_200_OK)
 

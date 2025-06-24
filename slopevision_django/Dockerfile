@@ -48,5 +48,8 @@ COPY . .
 # Expose the port if needed
 EXPOSE 8000
 
+RUN apt-get update && apt-get install -y wget gnupg
+RUN playwright install --with-deps
+
 # Run your Django app with Gunicorn
 CMD ["gunicorn", "slopevision_django.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "900"]
