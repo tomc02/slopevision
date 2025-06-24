@@ -2,7 +2,7 @@
 
 # Load environment variables from .env file
 set -o allexport
-source ../.env
+source ../slopevision_django/.env
 set +o allexport
 
 # Check if --build flag is provided
