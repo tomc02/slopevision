@@ -265,6 +265,8 @@ export default {
     const lastUpdated = ref(null);
     const historyLoading = ref(false);
     const historyHeight = ref(1500); // Default height for history panel
+    const historyFetchToken = ref(0); // Token to track latest fetch
+    const historyFetchTimeout = ref(null); // Timeout for debounce
 
     // Set default date to today
     const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'));
@@ -314,31 +316,49 @@ export default {
 
     const fetchHistory = async () => {
       if (!webcams.value.length) return;
-
       historyLoading.value = true;
       const webcamId = webcams.value[currentIndex.value].id;
-
+      historyFetchToken.value += 1;
+      const thisFetchToken = historyFetchToken.value;
       try {
         const response = await fetch(
           `${API_URL}/api/webcams/${webcamId}/history/?date=${selectedDate.value}`
         );
-
         if (response.ok) {
-          history.value = await response.json();
-          // Sort by timestamp descending (newest first)
-          history.value.sort((a, b) =>
-            new Date(b.timestamp) - new Date(a.timestamp)
-          );
+          const data = await response.json();
+          if (thisFetchToken === historyFetchToken.value) {
+            history.value = data;
+            history.value.sort((a, b) =>
+              new Date(b.timestamp) - new Date(a.timestamp)
+            );
+          }
         } else {
-          console.error("Failed to fetch history");
-          history.value = [];
+          if (thisFetchToken === historyFetchToken.value) {
+            console.error("Failed to fetch history");
+            history.value = [];
+          }
         }
       } catch (error) {
-        console.error("Error fetching history:", error);
-        history.value = [];
+        if (thisFetchToken === historyFetchToken.value) {
+          console.error("Error fetching history:", error);
+          history.value = [];
+        }
       } finally {
-        historyLoading.value = false;
+        if (thisFetchToken === historyFetchToken.value) {
+          historyLoading.value = false;
+        }
       }
+    };
+
+    // Debounced fetchHistory for webcam switching
+    const debouncedFetchHistory = () => {
+      if (historyFetchTimeout.value) {
+        clearTimeout(historyFetchTimeout.value);
+      }
+      historyFetchTimeout.value = setTimeout(() => {
+        fetchHistory();
+        historyFetchTimeout.value = null;
+      }, 500);
     };
 
     const selectHistoryItem = (item) => {
@@ -358,7 +378,7 @@ export default {
     const switchWebcam = async (index) => {
       currentIndex.value = index;
       selectedHistory.value = null;
-      await fetchHistory();
+      debouncedFetchHistory();
     };
 
     const prevWebcam = async () => {
@@ -406,7 +426,7 @@ export default {
     };
 
     // Watch for webcam changes to fetch new history
-    watch(currentIndex, fetchHistory);
+    watch(currentIndex, debouncedFetchHistory);
 
     // Initialize
     onMounted(async () => {
