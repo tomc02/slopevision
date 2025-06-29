@@ -96,13 +96,18 @@
 			</transition>
 
 			<!-- No Results Message -->
-			<div v-if="filteredPlaces.length === 0" class="py-12 text-center">
-				<p class="text-gray-500 dark:text-gray-400">No places match your filters.</p>
-				<button @click="resetFilters"
-					class="mt-2 px-4 py-2 text-indigo-600 hover:text-indigo-800 dark:hover:text-indigo-300 dark:text-indigo-400 transition">
-					Reset filters
-				</button>
+			<div v-if="filteredPlaces.length === 0" class="flex justify-center py-12 text-center">
+				<div v-if="loading" class="border-indigo-500 border-t-2 border-b-2 rounded-full w-8 h-8 animate-spin">
+				</div>
+				<div v-else>
+					<p class="text-gray-500 dark:text-gray-400">No places match your filters.</p>
+					<button @click="resetFilters"
+						class="mt-2 px-4 py-2 text-indigo-600 hover:text-indigo-800 dark:hover:text-indigo-300 dark:text-indigo-400 transition">
+						Reset filters
+					</button>
+				</div>
 			</div>
+
 
 			<!-- Grid View -->
 			<div v-if="viewMode === 'grid' && filteredPlaces.length > 0"
@@ -209,7 +214,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import WebcamVideo from "@/components/WebcamVideo.vue";
 import {
 	HeartIcon,
@@ -242,9 +247,41 @@ export default {
 		const selectedCountry = ref(null);
 		const selectedMountainRange = ref(null);
 		const sortOption = ref('name-asc');
+		const loading = ref(false);
+		const FILTERS_KEY = 'placeOverview_filters';
+
+		const saveSettings = () => {
+			const settings = {
+				searchQuery: searchQuery.value,
+				favoritesFilter: favoritesFilter.value,
+				selectedCountry: selectedCountry.value,
+				selectedMountainRange: selectedMountainRange.value,
+				sortOption: sortOption.value,
+				viewMode: viewMode.value,
+				showFilters: showFilters.value
+			};
+			localStorage.setItem(FILTERS_KEY, JSON.stringify(settings));
+		};
+
+		const loadSettings = () => {
+			const savedSettings = localStorage.getItem(FILTERS_KEY);
+			if (savedSettings) {
+				const settings = JSON.parse(savedSettings);
+				searchQuery.value = settings.searchQuery || "";
+				favoritesFilter.value = settings.favoritesFilter || null;
+				selectedCountry.value = settings.selectedCountry || null;
+				selectedMountainRange.value = settings.selectedMountainRange || null;
+				sortOption.value = settings.sortOption || 'name-asc';
+				viewMode.value = settings.viewMode || 'grid';
+				showFilters.value = false;
+			}
+		};
+
+		watch([searchQuery, favoritesFilter, selectedCountry, selectedMountainRange, sortOption, viewMode], saveSettings);
 
 		const fetchPlaces = async () => {
 			try {
+				loading.value = true;
 				const response = await fetch(`${API_URL}/api/places/`, { method: "GET" });
 				const data = await response.json();
 
@@ -255,6 +292,7 @@ export default {
 
 
 				places.value = data;
+				loading.value = false;
 				console.log("Fetched places:", places.value);
 			} catch (error) {
 				console.error("Error fetching places:", error);
@@ -373,9 +411,13 @@ export default {
 			selectedCountry.value = null;
 			selectedMountainRange.value = null;
 			sortOption.value = 'name-asc';
+			saveSettings(); // Also clear from local storage
 		};
 
-		onMounted(fetchPlaces);
+		onMounted(async () => {
+			await fetchPlaces();
+			loadSettings();
+		});
 
 		return {
 			places,
@@ -393,7 +435,8 @@ export default {
 			availableMountainRanges,
 			sortOption,
 			activeFiltersCount,
-			resetFilters
+			resetFilters,
+			loading,
 		};
 	},
 };
