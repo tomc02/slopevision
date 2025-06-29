@@ -73,34 +73,36 @@ class WebcamViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=['get'], url_path='history')
     def get_history(self, request, pk=None):
-        """
-        Custom action to get the history of a specific webcam.
-        """
-        webcam = self.get_object()
+        try:
+            webcam_id = int(pk)
+        except (TypeError, ValueError):
+            return Response({"detail": "Invalid webcam ID."}, status=400)
 
-        # if ?date=2021-10-01 is provided, filter by that date
-        date = request.query_params.get('date')
-        # if ?times=true is provided, return only available times for that date
-        times = request.query_params.get('times')
-        if date:
-            start_date = datetime.strptime(date, "%Y-%m-%d")
-            end_date = start_date + timedelta(days=1)
-            history = WebcamHistory.objects.filter(
-                webcam=webcam,
-                timestamp__gte=start_date,
-                timestamp__lt=end_date
-            ).order_by('-timestamp')
-            if times:
-                available_times = history.values_list('timestamp', flat=True)
-                response_data = {str(time.time())[:5]: time for time in available_times}
-            else:
-                response_data = WebcamHistorySerializer(history, many=True).data
+        date_str = request.query_params.get('date')
+        times_only = request.query_params.get('times') is not None
+
+        filters = {'webcam_id': webcam_id}
+        if date_str:
+            try:
+                start = datetime.strptime(date_str, "%Y-%m-%d")
+                end = start + timedelta(days=1)
+                filters['timestamp__gte'] = start
+                filters['timestamp__lt'] = end
+            except ValueError:
+                return Response({"detail": "Invalid date format. Use YYYY-MM-DD."}, status=400)
+
+        queryset = WebcamHistory.objects.filter(**filters).order_by('-timestamp')
+
+        if times_only:
+            timestamps = queryset.values_list('timestamp', flat=True)
+            response_data = {ts.strftime('%H:%M'): ts for ts in timestamps}
             return Response(response_data)
-        else:
-            # If no date is provided, return all history
-            history = WebcamHistory.objects.filter(webcam=webcam).order_by('-timestamp')
 
-        return Response(WebcamHistorySerializer(history, many=True).data)
+        # Optimize by deferring potentially heavy fields if not needed
+        queryset = queryset.select_related('webcam').only('id', 'timestamp', 'image', 'video', 'webcam_id')
+
+        serializer = WebcamHistorySerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema_view(

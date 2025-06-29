@@ -88,7 +88,7 @@ class WebcamHistory(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=['timestamp']),
-            models.Index(fields=['webcam', 'timestamp']),
+            models.Index(fields=['webcam', '-timestamp']),
         ]
 
     webcam = models.ForeignKey(Webcam, on_delete=models.CASCADE, related_name='history')
