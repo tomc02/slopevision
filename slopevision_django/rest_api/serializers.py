@@ -5,19 +5,18 @@ from .fields import Base64ImageField
 from dj_rest_auth.serializers import UserDetailsSerializer
 
 class PlaceSerializer(serializers.ModelSerializer):
-    # Nested serializer for webcams (weather data and forecasts have been removed as per your instruction)
     webcams = serializers.StringRelatedField(many=True)
     first_webcam = serializers.SerializerMethodField()
 
     def get_first_webcam(self, obj):
-        first_webcam = obj.webcams.first()
-        if first_webcam is None:
-            return ''
-        return first_webcam.url
+        first_webcam = next(iter(obj.webcams.all()), None)
+        return first_webcam.url if first_webcam else ''
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'webcams', 'first_webcam', 'country', 'nearest_city', 'mounain_range']
+        fields = ['id', 'name', 'latitude', 'longitude', 'description',
+                  'webcams', 'first_webcam', 'country', 'nearest_city', 'mounain_range']
+
 
 
 class WebcamSerializer(serializers.ModelSerializer):

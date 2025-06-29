@@ -9,7 +9,7 @@ from rest_api.views import PlaceViewSet, WebcamViewSet, WebcamHistoryViewSet, Cu
 
 # Create the router
 router = DefaultRouter()
-router.register(r'places', PlaceViewSet)
+router.register(r'places', PlaceViewSet, basename='place')
 router.register(r'webcams', WebcamViewSet)
 router.register(r'webcam-history', WebcamHistoryViewSet)
 

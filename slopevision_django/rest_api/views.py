@@ -13,6 +13,7 @@ from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from .management.commands import fetch_video_urls, fetch_hzs_images, save_history
 import threading
+from django.db.models import Prefetch
 
 @extend_schema_view(
     list=extend_schema(
@@ -25,8 +26,12 @@ import threading
     ),
 )
 class PlaceViewSet(viewsets.ModelViewSet):
-    queryset = Place.objects.all()
     serializer_class = PlaceSerializer
+
+    def get_queryset(self):
+        return Place.objects.prefetch_related(
+            Prefetch('webcams', queryset=Webcam.objects.all())
+        ).all()
 
     @extend_schema(
         description="Retrieve all webcams associated with a specific place.",
