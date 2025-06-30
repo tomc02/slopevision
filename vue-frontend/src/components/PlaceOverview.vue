@@ -117,7 +117,7 @@
 					class="group relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg overflow-hidden hover:scale-[1.02] transition-transform transform">
 					<!-- Webcam with loading state -->
 					<div class="relative bg-gray-200 dark:bg-gray-700 aspect-video overflow-hidden">
-						<WebcamVideo :altText="place.name" :url="place.first_webcam" style="pointer-events: none" />
+						<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none" />
 						<div v-if="place.country || place.mounain_range"
 							class="right-0 bottom-0 left-0 absolute bg-gradient-to-t from-black/70 to-transparent p-2">
 							<p class="text-white text-xs truncate">
@@ -165,7 +165,7 @@
 					<router-link :to="{ name: 'PlaceDetail', params: { id: place.id } }" class="flex">
 						<!-- Webcam thumbnail -->
 						<div class="relative bg-gray-200 dark:bg-gray-700 w-1/3 min-w-[120px] aspect-video">
-							<WebcamVideo :altText="place.name" :url="place.first_webcam" style="pointer-events: none" />
+							<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none" />
 						</div>
 
 						<!-- Place details -->
@@ -289,7 +289,6 @@ export default {
 					const user = store.getters['auth/currentUser'] || 'User';
 					favorites.value = new Set(user.favorite_places?.map(id => id) || []);
 				});
-
 
 				places.value = data;
 				loading.value = false;
