@@ -6,25 +6,30 @@ from dj_rest_auth.serializers import UserDetailsSerializer
 
 class PlaceSerializer(serializers.ModelSerializer):
     webcams = serializers.StringRelatedField(many=True)
-    first_webcam = serializers.SerializerMethodField()
-
-    def get_first_webcam(self, obj):
-        first_webcam = next(iter(obj.webcams.all()), None)
-        return first_webcam.url if first_webcam else ''
-
+    first_webcam_url = serializers.SerializerMethodField()
+    latest_webcam_history = serializers.SerializerMethodField()
     class Meta:
         model = Place
         fields = ['id', 'name', 'latitude', 'longitude', 'description',
-                  'webcams', 'first_webcam', 'country', 'nearest_city', 'mounain_range']
+                  'webcams', 'first_webcam_url', 'country', 'nearest_city', 'mounain_range', 'latest_webcam_history']
+    def get_first_webcam_url(self, obj):
+        return obj.first_webcam.url if obj.first_webcam else ''
+    def get_latest_webcam_history(self, obj):
+        latest_history = obj.first_webcam.latest_history if obj.first_webcam else None
+        return latest_history.url if latest_history else None
 
 
 
 class WebcamSerializer(serializers.ModelSerializer):
     url = serializers.ReadOnlyField()
+    latest_history_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Webcam
-        fields = ['id', 'place', 'name', 'url', 'source_type', 'source_url', 'page_url', 'img_page_url', 'img_tag_id', 'last_updated', 'history_rate']
+        fields = ['id', 'place', 'name', 'url', 'source_type', 'source_url', 'page_url', 'img_page_url', 'img_tag_id', 'last_updated', 'history_rate', 'latest_history_url']
+        
+    def get_latest_history_url(self, obj):
+        return obj.latest_history.url if obj.latest_history else None
 
 
 class WebcamHistorySerializer(serializers.ModelSerializer):

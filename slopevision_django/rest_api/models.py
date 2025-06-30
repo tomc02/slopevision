@@ -23,6 +23,13 @@ class Place(models.Model):
     country = models.CharField(max_length=100)
     nearest_city = models.CharField(max_length=100, blank=True, null=True)
     mounain_range = models.CharField(max_length=100, blank=True, null=True)
+    first_webcam = models.ForeignKey(
+        'Webcam',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='first_webcam_place'
+    )
 
     def __str__(self):
         return self.name
@@ -71,13 +78,21 @@ class Webcam(models.Model):
         default=30,
         help_text="Time interval in minutes for history updates (e.g., every 30 minutes)."
     )
+    
+    latest_history = models.ForeignKey(
+    'WebcamHistory',
+    on_delete=models.SET_NULL,
+    blank=True,
+    null=True,
+    related_name='latest_history_webcam'
+    )
 
     @property
     def url(self):
         return self.source_url if self.source_url else f"/media/{self.img_page_url}/{self.img_tag_id}"
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.place.name})"
 
 
 class WebcamHistory(models.Model):
@@ -98,3 +113,19 @@ class WebcamHistory(models.Model):
 
     def __str__(self):
         return f"Snapshot for {self.webcam.name} at {self.timestamp}"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        # Update the latest history for the webcam
+        if self.webcam:
+            self.webcam.latest_history = self
+            self.webcam.save(update_fields=['latest_history'])
+            
+    @property
+    def url(self):
+        if self.image:
+            return self.image.url
+        elif self.video:
+            return self.video.url
+        return None
