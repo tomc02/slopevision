@@ -1,6 +1,6 @@
 <template>
   <nav class="shadow-lg navbar-colors">
-    <div class="flex justify-between items-center mx-auto px-4 h-20 lg:h-12 container">
+    <div class="flex justify-between items-center px-28 w-full h-20 lg:h-12">
       <!-- Left: Logo and Title -->
       <div class="flex items-center space-x-3">
         <router-link
@@ -55,11 +55,11 @@
         <!-- Data Saver Toggle -->
         <button
             aria-label="Toggle Data Saver Mode"
-            class="p-2 rounded navbar-button"
+            class="rounded navbar-button"
             @click="toggleDataSaver"
         >
-          <span v-if="dataSaver" class="font-semibold text-xs">DS</span>
-          <span v-else class="font-light text-xs">DS</span>
+          <span v-if="dataSaver" class="font-bold text-indigo-500">DS</span>
+          <span v-else class="font-light">DS</span>
         </button>
 
         <!-- User Account Menu -->
@@ -224,10 +224,6 @@ export default {
     };
     const toggleDataSaver = () => {
       store.dispatch('ui/toggleDataSaver');
-      // If is on /live-webcams, reload the page to apply data saver mode
-      if (route.path === '/live-webcams') {
-        window.location.reload();
-      }
     };
     const toggleUserMenu = () => (userMenuOpen.value = !userMenuOpen.value);
     const closeUserMenu = () => (userMenuOpen.value = false);
