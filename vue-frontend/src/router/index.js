@@ -11,7 +11,7 @@ import UpgradeAccount from "@/views/UpgradeAccount.vue";
 import PaymentPage from "@/views/PaymentPage.vue";
 import LogoutView from "@/views/LogoutView.vue";
 import store from '../store';
-import Favorites from "@/views/Favorites.vue";
+import MapView from "@/views/MapView.vue";
 const routes = [
     {
         path: "/",
@@ -26,10 +26,10 @@ const routes = [
         meta: {title: "Live Webcams - Slope Vision", requiresAuth: true, requiresPremium: true}
     },
     {
-        path: "/favorites",
-        name: "Favorites",
-        component: Favorites,
-        meta: {title: "Favorites - Slope Vision", requiresAuth: true, requiresPremium: true}
+        path: "/map",
+        name: "Map",
+        component: MapView,
+        meta: {title: "Map - Slope Vision", requiresAuth: true, requiresPremium: true}
     },
     {
         path: "/place/:id",

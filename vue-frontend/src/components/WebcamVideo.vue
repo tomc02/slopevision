@@ -1,15 +1,32 @@
 <template>
   <div>
     <template v-if="isIframeUrl">
-      <iframe :src="url" allow="autoplay; fullscreen" allowfullscreen class="w-full aspect-video"
-              frameborder="0"></iframe>
+      <iframe
+        :src="url"
+        allow="autoplay; fullscreen"
+        allowfullscreen
+        class="w-full aspect-video"
+        frameborder="0"
+      ></iframe>
     </template>
+
     <template v-else-if="isVideoUrl">
-      <video :src="url" autoplay class="w-full object-cover aspect-video" 
-             :controls="controls" loop muted></video> <!-- Use :controls to bind prop -->
+      <video
+        :src="url"
+        autoplay
+        :controls="controls"
+        loop
+        muted
+        class="w-full object-cover aspect-video"
+      ></video>
     </template>
+
     <template v-else>
-      <img :alt="altText" :src="url" class="w-full object-cover aspect-video"/>
+      <img
+        :src="url"
+        :alt="altText"
+        class="w-full object-cover aspect-video"
+      />
     </template>
   </div>
 </template>
@@ -27,7 +44,7 @@ export default {
     },
     controls: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
@@ -38,7 +55,7 @@ export default {
   },
   methods: {
     isVideo(url) {
-      const videoExtensions = /(mp4|webm|ogg)/i; // Remove the anchoring `^` and `$`
+      const videoExtensions = /\.(mp4|webm|ogg)(\?.*)?$/i;
       return videoExtensions.test(url) || url.includes('rtsp.me');
     },
     isIframe(url) {
@@ -51,12 +68,12 @@ export default {
     }
   },
   watch: {
-    url(newUrl) {
-      this.updateDisplayType(newUrl);
+    url: {
+      immediate: true,
+      handler(newUrl) {
+        this.updateDisplayType(newUrl);
+      }
     }
-  },
-  mounted() {
-    this.updateDisplayType(this.url);
-  },
+  }
 };
 </script>

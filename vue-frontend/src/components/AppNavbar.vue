@@ -25,12 +25,12 @@
             <span>Webcams</span>
           </router-link>
           <router-link
-              :class="{ 'navbar-text-active': isActive('/favorites') }"
+              :class="{ 'navbar-text-active': isActive('/map') }"
               class="flex items-center space-x-2 navbar-text-hover"
-              to="/favorites"
+              to="/map"
           >
-            <HeartIcon class="w-5 h-5"/>
-            <span>Favorites</span>
+            <MapIcon class="w-5 h-5"/>
+            <span>Map</span>
           </router-link>
           <router-link
               :class="{ 'navbar-text-active': isActive('/about') }"
@@ -130,13 +130,13 @@
         <span>Webcams</span>
       </router-link>
       <router-link
-          :class="{ 'navbar-text-active': isActive('/favorites') }"
+          :class="{ 'navbar-text-active': isActive('/map') }"
           class="flex items-center space-x-2 pb-2 navbar-menu-border navbar-text-hover navbar-menu-item"
-          to="/favorites"
+          to="/map"
           @click="closeMenu"
       >
-        <HeartIcon class="w-5 h-5"/>
-        <span>Favorites</span>
+        <MapIcon class="w-5 h-5"/>
+        <span>Map</span>
       </router-link>
       <router-link
           :class="{ 'navbar-text-active': isActive('/about') }"
@@ -158,7 +158,7 @@ import {useRoute} from 'vue-router';
 import {useStore} from 'vuex';
 import {
   Bars3Icon,
-  HeartIcon,
+  MapIcon,
   VideoCameraIcon,
   InformationCircleIcon,
   MoonIcon,
@@ -172,7 +172,7 @@ export default {
   name: 'AppNavbar',
   components: {
     VideoCameraIcon,
-    HeartIcon,
+    MapIcon,
     InformationCircleIcon,
     MoonIcon,
     SunIcon,
