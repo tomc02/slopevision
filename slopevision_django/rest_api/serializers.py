@@ -4,20 +4,22 @@ from rest_api.models import CustomUser
 from .fields import Base64ImageField
 from dj_rest_auth.serializers import UserDetailsSerializer
 
+
 class PlaceSerializer(serializers.ModelSerializer):
-    webcams = serializers.StringRelatedField(many=True)
     first_webcam_url = serializers.SerializerMethodField()
     latest_webcam_history = serializers.SerializerMethodField()
+
     class Meta:
         model = Place
-        fields = ['id', 'name', 'latitude', 'longitude', 'description',
-                  'webcams', 'first_webcam_url', 'country', 'nearest_city', 'mounain_range', 'latest_webcam_history']
+        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'first_webcam_url',
+                  'country', 'nearest_city', 'mounain_range', 'latest_webcam_history']
+
     def get_first_webcam_url(self, obj):
         return obj.first_webcam.url if obj.first_webcam else ''
+
     def get_latest_webcam_history(self, obj):
         latest_history = obj.first_webcam.latest_history if obj.first_webcam else None
         return latest_history.url if latest_history else None
-
 
 
 class WebcamSerializer(serializers.ModelSerializer):
@@ -26,8 +28,9 @@ class WebcamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Webcam
-        fields = ['id', 'place', 'name', 'url', 'source_type', 'source_url', 'page_url', 'img_page_url', 'img_tag_id', 'last_updated', 'history_rate', 'latest_history_url']
-        
+        fields = ['id', 'place', 'name', 'url', 'source_type', 'source_url', 'page_url',
+                  'img_page_url', 'img_tag_id', 'last_updated', 'history_rate', 'latest_history_url']
+
     def get_latest_history_url(self, obj):
         return obj.latest_history.url if obj.latest_history else None
 
@@ -65,7 +68,8 @@ class CustomUserSerializer(UserDetailsSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'name', 'email', 'date_joined', 'account_type', 'profile_picture', 'favorite_places']
+        fields = ['username', 'name', 'email', 'date_joined',
+                  'account_type', 'profile_picture', 'favorite_places']
         read_only_fields = ['username', 'email', 'date_joined']
 
     def update(self, instance, validated_data):
@@ -73,7 +77,8 @@ class CustomUserSerializer(UserDetailsSerializer):
         name = validated_data.pop('get_full_name', None)
         if name:
             # Split the name into first_name and last_name
-            first_name, last_name = name.split(' ', 1) if ' ' in name else (name, '')
+            first_name, last_name = name.split(
+                ' ', 1) if ' ' in name else (name, '')
             instance.first_name = first_name
             instance.last_name = last_name
 
