@@ -290,6 +290,12 @@ export default {
 					favorites.value = new Set(user.favorite_places?.map(id => id) || []);
 				});
 
+				if (store.getters['ui/dataSaver']) {
+					data.forEach(place => {
+						place.first_webcam_url = place.latest_webcam_history || place.first_webcam_url;
+					});
+				}
+
 				places.value = data;
 				loading.value = false;
 				console.log("Fetched places:", places.value);

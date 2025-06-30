@@ -1,14 +1,14 @@
 <template>
-  <nav class="navbar-colors shadow-lg">
-    <div class="container mx-auto px-4 flex justify-between items-center h-20 lg:h-12">
+  <nav class="shadow-lg navbar-colors">
+    <div class="flex justify-between items-center mx-auto px-4 h-20 lg:h-12 container">
       <!-- Left: Logo and Title -->
       <div class="flex items-center space-x-3">
         <router-link
             class="flex items-center space-x-3 navbar-text-hover transition duration-200"
             to="/"
         >
-          <img alt="Logo" class="h-10 w-10" src="../../public/icon.png"/>
-          <span class="text-xl font-bold">Slope Vision</span>
+          <img alt="Logo" class="w-10 h-10" src="../../public/icon.png"/>
+          <span class="font-bold text-xl">Slope Vision</span>
         </router-link>
       </div>
 
@@ -18,7 +18,7 @@
         <div class="hidden md:flex space-x-6">
           <router-link
               :class="{ 'navbar-text-active': isActive('/live-webcams') }"
-              class="navbar-text-hover flex items-center space-x-2"
+              class="flex items-center space-x-2 navbar-text-hover"
               to="/live-webcams"
           >
             <VideoCameraIcon class="w-5 h-5"/>
@@ -26,7 +26,7 @@
           </router-link>
           <router-link
               :class="{ 'navbar-text-active': isActive('/favorites') }"
-              class="navbar-text-hover flex items-center space-x-2"
+              class="flex items-center space-x-2 navbar-text-hover"
               to="/favorites"
           >
             <HeartIcon class="w-5 h-5"/>
@@ -34,7 +34,7 @@
           </router-link>
           <router-link
               :class="{ 'navbar-text-active': isActive('/about') }"
-              class="navbar-text-hover flex items-center space-x-2"
+              class="flex items-center space-x-2 navbar-text-hover"
               to="/about"
           >
             <InformationCircleIcon class="w-5 h-5"/>
@@ -45,17 +45,27 @@
         <!-- Dark Mode Toggle -->
         <button
             aria-label="Toggle Dark Mode"
-            class="p-2 navbar-button rounded"
+            class="p-2 rounded navbar-button"
             @click="toggleDarkMode"
         >
           <MoonIcon v-if="darkMode" class="w-5 h-5"/>
           <SunIcon v-else class="w-5 h-5"/>
         </button>
 
+        <!-- Data Saver Toggle -->
+        <button
+            aria-label="Toggle Data Saver Mode"
+            class="p-2 rounded navbar-button"
+            @click="toggleDataSaver"
+        >
+          <span v-if="dataSaver" class="font-semibold text-xs">DS</span>
+          <span v-else class="font-light text-xs">DS</span>
+        </button>
+
         <!-- User Account Menu -->
         <div class="relative">
           <button
-              class="relative p-1.5 navbar-button rounded-full border"
+              class="relative p-1.5 border rounded-full navbar-button"
               @click="toggleUserMenu"
           >
             <UserIcon class="w-6 h-6"/>
@@ -63,19 +73,19 @@
 
           <div
               v-if="userMenuOpen"
-              class="navbar-menu absolute right-0 mt-2 rounded shadow-lg w-40 z-10"
+              class="right-0 z-10 absolute shadow-lg mt-2 rounded w-40 navbar-menu"
           >
             <template v-if="isAuthenticated">
-              <p class="p-2 border-b text-gray-800 dark:text-gray-200 font-semibold">{{ username }}</p>
+              <p class="p-2 border-b font-semibold text-gray-800 dark:text-gray-200">{{ username }}</p>
               <router-link
-                  class="navbar-menu-item block px-4 py-2 rounded-tl-lg rounded-tr-lg navbar-menu-border"
+                  class="block px-4 py-2 navbar-menu-border rounded-tl-lg rounded-tr-lg navbar-menu-item"
                   to="/profile"
                   @click="closeUserMenu"
               >
                 Profile
               </router-link>
               <button
-                  class="navbar-menu-item block w-full text-left px-4 py-2 0 rounded-b-lg text-danger"
+                  class="block px-4 py-2 rounded-b-lg w-full text-danger text-left navbar-menu-item 0"
                   @click="logout"
               >
                 Logout
@@ -83,14 +93,14 @@
             </template>
             <template v-else>
               <router-link
-                  class="navbar-menu-item block px-4 py-2 rounded-tl-lg rounded-tr-lg navbar-menu-border"
+                  class="block px-4 py-2 navbar-menu-border rounded-tl-lg rounded-tr-lg navbar-menu-item"
                   to="/login"
                   @click="closeUserMenu"
               >
                 Login
               </router-link>
               <router-link
-                  class="navbar-menu-item block px-4 py-2 rounded-b-lg"
+                  class="block px-4 py-2 rounded-b-lg navbar-menu-item"
                   to="/register"
                   @click="closeUserMenu"
               >
@@ -109,10 +119,10 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="menuOpen" class="md:hidden navbar-menu py-2 px-4 space-y-2">
+    <div v-if="menuOpen" class="md:hidden space-y-2 px-4 py-2 navbar-menu">
       <router-link
           :class="{ 'navbar-text-active': isActive('/live-webcams') }"
-          class="navbar-text-hover navbar-menu-border navbar-menu-item flex items-center space-x-2 pb-2"
+          class="flex items-center space-x-2 pb-2 navbar-menu-border navbar-text-hover navbar-menu-item"
           to="/live-webcams"
           @click="closeMenu"
       >
@@ -121,7 +131,7 @@
       </router-link>
       <router-link
           :class="{ 'navbar-text-active': isActive('/favorites') }"
-          class="navbar-text-hover navbar-menu-border navbar-menu-item flex items-center space-x-2 pb-2"
+          class="flex items-center space-x-2 pb-2 navbar-menu-border navbar-text-hover navbar-menu-item"
           to="/favorites"
           @click="closeMenu"
       >
@@ -130,7 +140,7 @@
       </router-link>
       <router-link
           :class="{ 'navbar-text-active': isActive('/about') }"
-          class="navbar-text-hover navbar-menu-item flex items-center space-x-2 pb-2"
+          class="flex items-center space-x-2 pb-2 navbar-text-hover navbar-menu-item"
           to="/about"
           @click="closeMenu"
       >
@@ -176,6 +186,7 @@ export default {
     const menuOpen = ref(false);
     const darkMode = ref(false);
     const userMenuOpen = ref(false);
+    const dataSaver = computed(() => store.getters['ui/dataSaver']);
 
     onMounted(() => {
       const savedMode = localStorage.getItem("darkMode");
@@ -211,6 +222,13 @@ export default {
       document.documentElement.classList.toggle('dark', darkMode.value);
       localStorage.setItem('darkMode', JSON.stringify(darkMode.value));
     };
+    const toggleDataSaver = () => {
+      store.dispatch('ui/toggleDataSaver');
+      // If is on /live-webcams, reload the page to apply data saver mode
+      if (route.path === '/live-webcams') {
+        window.location.reload();
+      }
+    };
     const toggleUserMenu = () => (userMenuOpen.value = !userMenuOpen.value);
     const closeUserMenu = () => (userMenuOpen.value = false);
 
@@ -226,11 +244,13 @@ export default {
       menuOpen,
       darkMode,
       userMenuOpen,
+      dataSaver,
       isAuthenticated,
       username,
       toggleMenu,
       closeMenu,
       toggleDarkMode,
+      toggleDataSaver,
       toggleUserMenu,
       closeUserMenu,
       logout,
