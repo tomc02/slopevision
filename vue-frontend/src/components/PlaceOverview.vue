@@ -165,7 +165,8 @@
 					<router-link :to="{ name: 'PlaceDetail', params: { id: place.id } }" class="flex">
 						<!-- Webcam thumbnail -->
 						<div class="relative bg-gray-200 dark:bg-gray-700 w-1/3 min-w-[120px] aspect-video">
-							<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none" />
+							<WebcamVideo :altText="place.name" :url="place.first_webcam_url"
+								style="pointer-events: none" />
 						</div>
 
 						<!-- Place details -->
@@ -279,6 +280,19 @@ export default {
 
 		watch([searchQuery, favoritesFilter, selectedCountry, selectedMountainRange, sortOption, viewMode], saveSettings);
 
+		// watch for ui/dataSaver changes
+		watch(() => store.getters['ui/dataSaver'], (newValue) => {
+			if (newValue) {
+				places.value.forEach(place => {
+					place.first_webcam_url = place.latest_webcam_history || place.first_webcam_url;
+				});
+			} else {
+				places.value.forEach(place => {
+					place.first_webcam_url = place.live_url;
+				});
+			}
+		});
+
 		const fetchPlaces = async () => {
 			try {
 				loading.value = true;
@@ -290,11 +304,12 @@ export default {
 					favorites.value = new Set(user.favorite_places?.map(id => id) || []);
 				});
 
-				if (store.getters['ui/dataSaver']) {
-					data.forEach(place => {
+				data.forEach(place => {
+					place.live_url = place.first_webcam_url;
+					if (store.getters['ui/dataSaver']) {
 						place.first_webcam_url = place.latest_webcam_history || place.first_webcam_url;
-					});
-				}
+					}
+				});
 
 				places.value = data;
 				loading.value = false;
