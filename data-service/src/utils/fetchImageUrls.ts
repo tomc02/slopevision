@@ -11,7 +11,7 @@ export async function getImageUrls(imageIds: string[]): Promise<Record<string, s
 
   try {
     await page.goto('https://meteo.hzs.sk/', { waitUntil: 'load' });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
     for (const id of imageIds) {
       const img = await page.$(`#${id}`);
