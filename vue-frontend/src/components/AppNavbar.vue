@@ -1,6 +1,6 @@
 <template>
   <nav class="shadow-lg navbar-colors">
-    <div class="flex justify-between items-center px-28 w-full h-20 lg:h-12">
+    <div class="flex justify-between items-center px-12 w-full h-20 lg:h-12">
       <!-- Left: Logo and Title -->
       <div class="flex items-center space-x-3">
         <router-link class="flex items-center space-x-3 navbar-text-hover transition duration-200" to="/">
