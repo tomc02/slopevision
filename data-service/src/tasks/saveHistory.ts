@@ -136,10 +136,19 @@ async function compressVideo(input: string, output: string) {
 }
 
 async function logToHistory(webcamId: number, imagePath?: string, videoPath?: string) {
-    await db.insert(WebcamHistory).values({
+    const insertedRows = await db.insert(WebcamHistory).values({
         webcamId,
         image: imagePath ?? null,
         video: videoPath ?? null,
         timestamp: DateTime.now().setZone("Europe/Prague").toJSDate(),
-    });
+    }).returning({ insertedId: WebcamHistory.id });
+
+    const insertedId = insertedRows[0]?.insertedId;
+
+    if (insertedId) {
+        await db.update(Webcam).set({ latestHistoryId: insertedId }).where(eq(Webcam.id, webcamId));
+        console.log(`Logged history for webcam ID ${webcamId} with history ID ${insertedId}`);
+    } else {
+        console.error(`Failed to log history for webcam ID ${webcamId}`);
+    }
 }
