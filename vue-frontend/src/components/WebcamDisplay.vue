@@ -298,6 +298,9 @@ export default {
         const response = await fetch(`${API_URL}/api/places/${props.placeId}/webcams`);
         if (response.ok) {
           webcams.value = await response.json();
+          // Sort webcams by ID to maintain consistent order
+          webcams.value.sort((a, b) => a.id - b.id);
+
           // Fetch history for the first webcam
           await fetchHistory();
         } else {
