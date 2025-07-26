@@ -167,3 +167,4 @@ slopevision_django/media
 slopevision_django/static/
 **/slopevision-dev.json
 bun.lock
+.env.production

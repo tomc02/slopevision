@@ -1,0 +1,8 @@
+GOOGLE_APPLICATION_CREDENTIALS=./key.json
+DEBUG=True
+FRONTEND_URL=http://127.0.0.1:5173
+SECRET_KEY='some-secret-key'
+DATABASE_URL='postgresql://postgres:postgres@localhost:5432/slopevision'
+GOOGLE_PROJECT_ID=project-id
+REGION=us-east1
+SERVICE_ACCOUNT_EMAIL='email@example.com'
