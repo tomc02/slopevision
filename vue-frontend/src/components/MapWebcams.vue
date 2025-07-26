@@ -19,8 +19,8 @@
           </select>
         </div>
       </div>
-      <div class="shadow-lg rounded-lg overflow-hidden" style="height: 70vh; min-height: 400px;">
-        <div ref="mapContainer" style="height: 100%; width: 100%;" />
+      <div class="z-10 shadow-lg rounded-lg h-[70dvh] min-h-96 overflow-hidden">
+        <div ref="mapContainer" class="w-full h-full"></div>
       </div>
     </div>
   </div>
@@ -33,6 +33,7 @@ import { API_URL } from "@/config";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import WebcamPopup from '@/components/WebcamPopup.vue'
+import mapPinIcon from '@/assets/map-pin.svg';
 
 export default {
   name: "MapWebcams",
@@ -111,6 +112,12 @@ export default {
       filteredPlaces.value.forEach(place => {
         const marker = L.marker([place.latitude, place.longitude], {
           title: place.name,
+          icon: L.icon({
+            iconUrl: mapPinIcon,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+            popupAnchor: [0, -20],
+          }),
         });
 
         // Dynamically render the Vue component

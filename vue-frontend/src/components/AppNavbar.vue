@@ -63,7 +63,7 @@
         </button>
 
         <!-- User Account Menu -->
-        <div class="relative">
+        <div class="z-50 relative">
           <button
               class="relative p-1.5 border rounded-full navbar-button"
               @click="toggleUserMenu"
@@ -119,7 +119,7 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div v-if="menuOpen" class="md:hidden space-y-2 px-4 py-2 navbar-menu">
+    <div v-if="menuOpen" class="md:hidden z-50 space-y-2 px-4 py-2 navbar-menu">
       <router-link
           :class="{ 'navbar-text-active': isActive('/live-webcams') }"
           class="flex items-center space-x-2 pb-2 navbar-menu-border navbar-text-hover navbar-menu-item"
