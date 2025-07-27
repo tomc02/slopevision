@@ -1,16 +1,16 @@
 <template>
-  <div id="app" class="bg-app-light-bg dark:bg-app-dark-bg dark:text-gray-100 h-screen flex flex-col">
+  <div id="app" class="flex flex-col bg-app-light-bg dark:bg-app-dark-bg h-screen dark:text-gray-100">
     <!-- Navbar Component -->
     <Navbar/>
 
     <!-- Main Content Area -->
-    <div class="bg-app-light-bg dark:bg-app-dark-bg flex-1 w-full px-4 py-4">
+    <div class="flex-1 bg-app-light-bg dark:bg-app-dark-bg w-full">
       <!-- Router View for Dynamic Content -->
       <router-view/>
     </div>
 
     <!-- Footer Component -->
-    <footer class="bg-navbar-light-bg dark:bg-navbar-dark-bg text-center h-10 text-sm p-2">
+    <footer class="bg-navbar-light-bg dark:bg-navbar-dark-bg p-2 h-10 text-sm text-center">
       <p class="text-secondary-light dark:text-secondary-dark">&copy; 2024 Slope Vision</p>
     </footer>
   </div>
