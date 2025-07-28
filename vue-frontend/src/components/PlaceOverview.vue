@@ -192,7 +192,7 @@
 					<div
 						class="relative bg-gradient-to-br from-gray-200 dark:from-gray-700 to-gray-300 dark:to-gray-800 aspect-video overflow-hidden">
 						<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none"
-							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+							class="w-full h-full object-cover transition-transform duration-500" />
 
 						<!-- Location Badge -->
 						<div class="top-3 left-3 absolute">
