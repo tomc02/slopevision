@@ -1,109 +1,182 @@
 <template>
-	<div class="py-8 min-h-fit">
-		<div class="mx-auto px-4 container">
-			<!-- Page Title and Controls -->
-			<div class="flex md:flex-row flex-col justify-between items-center gap-4 mb-8">
-				<h1 class="font-bold text-3xl">
-					Places Overview
-					<span v-if="activeFiltersCount > 0" class="font-normal text-gray-500 dark:text-gray-400 text-sm">
-						({{ filteredPlaces.length }} results)
-					</span>
-				</h1>
+	<div
+		class="">
+		<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+			<div class="mb-8">
+				<div class="mb-0 text-center">
+					<h1
+						class="bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4 font-bold text-transparent text-4xl">
+						Discover Places
+					</h1>
 
-				<div class="flex items-center gap-2">
-					<button @click="showFilters = !showFilters"
-						class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition">
-						<FunnelIcon class="w-5 h-5" />
-						<span>Filters</span>
-						<span v-if="activeFiltersCount > 0"
-							class="flex justify-center items-center bg-indigo-500 rounded-full w-5 h-5 text-white text-xs">
-							{{ activeFiltersCount }}
-						</span>
-					</button>
+				</div>
 
-					<button @click="toggleViewMode"
-						class="hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg transition">
-						<Squares2X2Icon v-if="viewMode === 'grid'" class="w-5 h-5" />
-						<ListBulletIcon v-else class="w-5 h-5" />
-					</button>
+				<!-- Controls Bar -->
+				<div
+					class="bg-white/80 dark:bg-gray-800/80 shadow-xl backdrop-blur-md px-6 py-4 border border-gray-200 dark:border-gray-700 rounded-2xl">
+					<div class="flex lg:flex-row flex-col justify-between items-center gap-4">
+						<!-- Stats and Filter Toggle -->
+						<div class="flex items-center gap-6">
+							<div class="text-center">
+								<div class="font-bold text-indigo-600 dark:text-indigo-400 text-2xl">
+									{{ filteredPlaces.length }}
+								</div>
+								<div class="text-gray-500 dark:text-gray-400 text-sm">Places</div>
+							</div>
+
+							<div class="bg-gray-300 dark:bg-gray-600 w-px h-8"></div>
+
+							<button @click="showFilters = !showFilters" :class="{
+								'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400': showFilters,
+								'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700/50': !showFilters
+							}" class="flex items-center gap-3 px-4 py-2 rounded-xl font-medium transition-all duration-200">
+								<FunnelIcon class="w-5 h-5" />
+								<span>Filters</span>
+								<div v-if="activeFiltersCount > 0"
+									class="flex justify-center items-center bg-orange-500 rounded-full w-6 h-6 font-bold text-white text-xs animate-pulse">
+									{{ activeFiltersCount }}
+								</div>
+							</button>
+							<div v-if="activeFiltersCount > 0">
+							<button @click="resetFilters"
+								class="hover:bg-red-50 dark:hover:bg-red-900/20 px-6 py-2 rounded-xl font-medium text-gray-600 hover:text-red-600 dark:hover:text-red-400 dark:text-gray-400 transition-all duration-200">
+								🔄 Reset Filters
+							</button>
+							</div>
+						</div>
+
+						<!-- View Controls -->
+						<div class="flex items-center gap-3">
+													<!-- Sort Options Row -->
+						<div class="border-gray-200 dark:border-gray-700">
+							<div class="flex sm:flex-row flex-col justify-between items-start sm:items-center gap-4">
+								<div class="w-full sm:w-auto">
+									<select v-model="sortOption" class="filter-select sm:w-auto">
+										<option value="name-asc">📝 Name (A-Z)</option>
+										<option value="name-desc">📝 Name (Z-A)</option>
+										<option value="country-asc">🌍 Country (A-Z)</option>
+										<option value="range-asc">🏔️ Range (A-Z)</option>
+									</select>
+								</div>
+							</div>
+						</div>
+							<div class="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+								<button @click="viewMode = 'grid'" :class="{
+									'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm': viewMode === 'grid',
+									'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300': viewMode !== 'grid'
+								}" class="p-2 rounded-lg transition-all duration-200">
+									<Squares2X2Icon class="w-5 h-5" />
+								</button>
+								<button @click="viewMode = 'list'" :class="{
+									'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm': viewMode === 'list',
+									'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300': viewMode !== 'list'
+								}" class="p-2 rounded-lg transition-all duration-200">
+									<ListBulletIcon class="w-5 h-5" />
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
 			<!-- Filter Panel -->
-			<transition name="slide-down">
-				<div v-if="showFilters" class="bg-gray-50 dark:bg-gray-800 shadow-sm mb-6 p-4 rounded-lg">
-					<div class="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-						<!-- Search -->
-						<div class="md:col-span-2 lg:col-span-4">
-							<label class="block mb-1 font-medium text-sm">Search</label>
-							<input v-model="searchQuery"
-								class="dark:bg-gray-800 p-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full dark:text-gray-100"
-								placeholder="Search places..." type="text" />
-						</div>
+			<transition enter-active-class="transition ease-out duration-300"
+				enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+				leave-active-class="transition ease-in duration-200" leave-from-class="transform opacity-100 scale-100"
+				leave-to-class="transform opacity-0 scale-95">
+				<div v-if="showFilters" class="mb-8">
+					<div
+						class="bg-white/90 dark:bg-gray-800/90 shadow-xl backdrop-blur-md p-6 border border-gray-200 dark:border-gray-700 rounded-2xl">
+						<div class="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+							<!-- Search -->
+							<div class="xl:col-span-2">
+								<label class="block mb-2 font-semibold text-gray-700 dark:text-gray-300 text-sm">
+									Search Places
+								</label>
+								<div class="relative">
+									<input v-model="searchQuery"
+										class="bg-gray-50 dark:bg-gray-700 px-4 py-2 pl-10 border border-gray-200 dark:border-gray-600 focus:border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full text-gray-900 dark:text-gray-100 transition-all duration-200 placeholder-gray-500 dark:placeholder-gray-400"
+										placeholder="Search by name, location, or description..." type="text" />
+									<svg class="top-1/2 left-3 absolute w-5 h-5 text-gray-400 -translate-y-1/2 transform"
+										fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+											d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+									</svg>
+								</div>
+							</div>
 
-						<!-- Favorites -->
-						<div>
-							<label class="block mb-1 font-medium text-sm">Favorites</label>
-							<select v-model="favoritesFilter" class="filter-select">
-								<option :value="null">All places</option>
-								<option value="favorites">Only favorites</option>
-								<option value="non-favorites">Non-favorites</option>
-							</select>
-						</div>
+							<!-- Favorites -->
+							<div>
+								<label class="block mb-2 font-semibold text-gray-700 dark:text-gray-300 text-sm">
+									Favorites
+								</label>
+								<select v-model="favoritesFilter" class="filter-select">
+									<option :value="null">All places</option>
+									<option value="favorites">💖 Only favorites</option>
+									<option value="non-favorites">Discover new</option>
+								</select>
+							</div>
 
-						<!-- Country -->
-						<div>
-							<label class="block mb-1 font-medium text-sm">Country</label>
-							<select v-model="selectedCountry" class="filter-select"
-								@change="selectedMountainRange = null">
-								<option :value="null">All countries</option>
-								<option v-for="country in availableCountries" :key="country" :value="country">
-									{{ country }}
-								</option>
-							</select>
-						</div>
+							<!-- Country -->
+							<div>
+								<label class="block mb-2 font-semibold text-gray-700 dark:text-gray-300 text-sm">
+									Country
+								</label>
+								<select v-model="selectedCountry" class="filter-select"
+									@change="selectedMountainRange = null">
+									<option :value="null">🌍 All countries</option>
+									<option v-for="country in availableCountries" :key="country" :value="country">
+										{{ country }}
+									</option>
+								</select>
+							</div>
 
-						<!-- Mountain Range -->
-						<div>
-							<label class="block mb-1 font-medium text-sm">Mountain Range</label>
-							<select v-model="selectedMountainRange" class="filter-select" :disabled="!selectedCountry">
-								<option :value="null">All ranges</option>
-								<option v-for="range in availableMountainRanges" :key="range" :value="range">
-									{{ range }}
-								</option>
-							</select>
+							<!-- Mountain Range -->
+							<div>
+								<label class="block mb-2 font-semibold text-gray-700 dark:text-gray-300 text-sm">
+									Mountain Range
+								</label>
+								<select v-model="selectedMountainRange" class="filter-select"
+									:disabled="!selectedCountry">
+									<option :value="null">🏔️ All ranges</option>
+									<option v-for="range in availableMountainRanges" :key="range" :value="range">
+										{{ range }}
+									</option>
+								</select>
+							</div>
 						</div>
-
-						<!-- Sort Options -->
-						<div>
-							<label class="block mb-1 font-medium text-sm">Sort by</label>
-							<select v-model="sortOption" class="filter-select">
-								<option value="name-asc">Name (A-Z)</option>
-								<option value="name-desc">Name (Z-A)</option>
-								<option value="country-asc">Country (A-Z)</option>
-								<option value="range-asc">Range (A-Z)</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="flex justify-end mt-4">
-						<button @click="resetFilters"
-							class="px-4 py-2 text-gray-600 hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-300 text-sm transition">
-							Reset all filters
-						</button>
 					</div>
 				</div>
 			</transition>
 
-			<!-- No Results Message -->
-			<div v-if="filteredPlaces.length === 0" class="flex justify-center py-12 text-center">
-				<div v-if="loading" class="border-indigo-500 border-t-2 border-b-2 rounded-full w-8 h-8 animate-spin">
+			<!-- No Results State -->
+			<div v-if="filteredPlaces.length === 0" class="flex flex-col justify-center items-center py-20">
+				<div v-if="loading" class="text-center">
+					<div class="relative">
+						<div
+							class="border-4 border-indigo-200 dark:border-indigo-800 rounded-full w-16 h-16 animate-spin">
+						</div>
+						<div
+							class="top-0 left-0 absolute border-4 border-t-indigo-600 border-transparent rounded-full w-16 h-16 animate-spin">
+						</div>
+					</div>
+					<p class="mt-4 text-gray-600 dark:text-gray-400 text-lg">Loading amazing places...</p>
 				</div>
-				<div v-else>
-					<p class="text-gray-500 dark:text-gray-400">No places match your filters.</p>
+				<div v-else class="max-w-md text-center">
+					<div
+						class="flex justify-center items-center bg-gradient-to-br from-gray-100 dark:from-gray-700 to-gray-200 dark:to-gray-800 mx-auto mb-6 rounded-full w-24 h-24">
+						<svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+					</div>
+					<h3 class="mb-2 font-semibold text-gray-700 dark:text-gray-300 text-xl">No places found</h3>
+					<p class="mb-6 text-gray-500 dark:text-gray-400">Try adjusting your filters or search terms to
+						discover more places.</p>
 					<button @click="resetFilters"
-						class="mt-2 px-4 py-2 text-indigo-600 hover:text-indigo-800 dark:hover:text-indigo-300 dark:text-indigo-400 transition">
-						Reset filters
+						class="bg-gradient-to-r from-indigo-500 hover:from-indigo-600 to-purple-600 hover:to-purple-700 shadow-lg hover:shadow-xl px-6 py-3 rounded-xl font-medium text-white hover:scale-105 transition-all duration-200 transform">
+						🔄 Reset All Filters
 					</button>
 				</div>
 			</div>
@@ -114,97 +187,147 @@
 				class="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
 				<router-link v-for="place in filteredPlaces" :key="place.id"
 					:to="{ name: 'PlaceDetail', params: { id: place.id } }"
-					class="group relative bg-item-light-bg dark:bg-item-dark-bg shadow-lg rounded-lg overflow-hidden hover:scale-[1.02] transition-transform transform">
-					<!-- Webcam with loading state -->
-					<div class="relative bg-gray-200 dark:bg-gray-700 aspect-video overflow-hidden">
-						<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none" />
-						<div v-if="place.country || place.mounain_range"
-							class="right-0 bottom-0 left-0 absolute bg-gradient-to-t from-black/70 to-transparent p-2">
-							<p class="text-white text-xs truncate">
-								{{ place.mounain_range }}{{ place.country ? `, ${place.country}` : '' }}
+					class="group bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 transform">
+					<!-- Webcam Container -->
+					<div
+						class="relative bg-gradient-to-br from-gray-200 dark:from-gray-700 to-gray-300 dark:to-gray-800 aspect-video overflow-hidden">
+						<WebcamVideo :altText="place.name" :url="place.first_webcam_url" style="pointer-events: none"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+
+						<!-- Location Badge -->
+						<div class="top-3 left-3 absolute">
+							<div
+								class="bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full font-medium text-white text-xs">
+								{{ place.country }}
+							</div>
+						</div>
+
+						<!-- Favorite Button -->
+						<button
+							class="top-3 right-3 absolute flex justify-center items-center bg-white/90 dark:bg-gray-800/90 opacity-0 group-hover:opacity-100 shadow-lg backdrop-blur-sm rounded-full w-10 h-10 hover:scale-110 transition-all duration-200"
+							@click.stop.prevent="toggleFavorite(place.id)"
+							:aria-label="isFavorite(place.id) ? 'Remove from favorites' : 'Add to favorites'">
+							<HeartIcon :class="[
+								'w-5 h-5 transition-colors duration-200',
+								isFavorite(place.id)
+									? 'text-red-500 fill-current'
+									: 'text-gray-400 dark:text-gray-500 hover:text-red-500'
+							]" />
+						</button>
+
+						<!-- Mountain Range Overlay -->
+						<div v-if="place.mounain_range"
+							class="right-0 bottom-0 left-0 absolute bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
+							<p class="font-medium text-white text-sm truncate">
+								🏔️ {{ place.mounain_range }}
 							</p>
 						</div>
 					</div>
 
-					<!-- Place Details -->
-					<div class="p-4">
-						<div class="flex justify-between items-start">
-							<h2 class="font-semibold text-primary-light dark:text-primary-dark text-xl">
+					<!-- Content Area -->
+					<div class="p-5">
+						<div class="mb-3">
+							<h3
+								class="mb-1 font-bold text-gray-900 dark:group-hover:text-indigo-400 dark:text-white group-hover:text-indigo-600 text-lg transition-colors duration-200">
 								{{ place.name }}
-								<span v-if="place.nearest_city"
-									class="block font-normal text-gray-500 dark:text-gray-400 text-sm">
-									Near {{ place.nearest_city }}
-								</span>
-							</h2>
-							<span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">
-								{{ place.country }}
-							</span>
+							</h3>
+							<p v-if="place.nearest_city"
+								class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+								📍 Near {{ place.nearest_city }}
+							</p>
 						</div>
-						<p class="mt-2 text-secondary-light dark:text-secondary-dark text-sm line-clamp-3">
-							{{ place.description || "No description available." }}
-						</p>
-					</div>
 
-					<!-- Favorite Button -->
-					<button
-						class="top-4 right-4 absolute flex justify-center items-center bg-white/90 dark:bg-gray-800/90 opacity-0 group-hover:opacity-100 shadow-md border border-gray-200 dark:border-gray-700 rounded-full w-8 h-8 transition-opacity"
-						@click.stop.prevent="toggleFavorite(place.id)"
-						:aria-label="isFavorite(place.id) ? 'Remove from favorites' : 'Add to favorites'">
-						<HeartIcon :class="[
-							'w-5 h-5',
-							isFavorite(place.id) ? 'text-red-500 fill-current' : 'text-gray-400 dark:text-gray-500 fill-none stroke-2'
-						]" />
-					</button>
+						<p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 leading-relaxed">
+							{{ place.description || "Discover this amazing destination with live webcam views." }}
+						</p>
+
+						<!-- Action Footer -->
+						<div class="mt-4 pt-4 border-gray-100 dark:border-gray-700 border-t">
+							<div class="flex justify-between items-center">
+								<span class="flex items-center text-gray-500 dark:text-gray-400 text-xs">
+									📹 Live webcam
+								</span>
+								<div
+									class="font-medium text-indigo-600 dark:text-indigo-400 text-sm transition-transform group-hover:translate-x-1 duration-200">
+									View details →
+								</div>
+							</div>
+						</div>
+					</div>
 				</router-link>
 			</div>
 
 			<!-- List View -->
-			<div v-if="viewMode === 'list' && filteredPlaces.length > 0" class="space-y-2">
+			<div v-if="viewMode === 'list' && filteredPlaces.length > 0" class="space-y-4">
 				<div v-for="place in filteredPlaces" :key="place.id"
-					class="bg-item-light-bg dark:bg-item-dark-bg hover:shadow-md rounded-lg overflow-hidden transition-shadow">
-					<router-link :to="{ name: 'PlaceDetail', params: { id: place.id } }" class="flex">
-						<!-- Webcam thumbnail -->
-						<div class="relative bg-gray-200 dark:bg-gray-700 w-1/3 min-w-[120px] aspect-video">
+					class="group bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden transition-all duration-300">
+					<router-link :to="{ name: 'PlaceDetail', params: { id: place.id } }"
+						class="flex sm:flex-row flex-col">
+						<!-- Webcam Thumbnail -->
+						<div
+							class="relative bg-gradient-to-br from-gray-200 dark:from-gray-700 to-gray-300 dark:to-gray-800 w-full sm:w-80 aspect-video overflow-hidden">
 							<WebcamVideo :altText="place.name" :url="place.first_webcam_url"
-								style="pointer-events: none" />
-						</div>
+								style="pointer-events: none"
+								class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
 
-						<!-- Place details -->
-						<div class="flex flex-col flex-1 p-4">
-							<div class="flex justify-between items-start">
-								<div>
-									<h2 class="font-semibold text-primary-light dark:text-primary-dark text-lg">
-										{{ place.name }}
-										<span v-if="place.nearest_city"
-											class="block font-normal text-gray-500 dark:text-gray-400 text-sm">
-											Near {{ place.nearest_city }}
-										</span>
-									</h2>
-									<p class="mt-1 text-secondary-light dark:text-secondary-dark text-sm line-clamp-2">
-										{{ place.description || "No description available." }}
-									</p>
-								</div>
-								<div class="flex items-center gap-2">
-									<span
-										class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs whitespace-nowrap">
-										{{ place.country }}
-									</span>
-									<button @click.stop.prevent="toggleFavorite(place.id)"
-										class="hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded-full transition"
-										:aria-label="isFavorite(place.id) ? 'Remove from favorites' : 'Add to favorites'">
-										<HeartIcon :class="[
-											'w-5 h-5',
-											isFavorite(place.id) ? 'text-red-500 fill-current' : 'text-gray-400 dark:text-gray-500 fill-none stroke-2'
-										]" />
-									</button>
+							<!-- Country Badge -->
+							<div class="top-3 left-3 absolute">
+								<div
+									class="bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full font-medium text-white text-xs">
+									{{ place.country }}
 								</div>
 							</div>
+						</div>
 
-							<div class="flex flex-wrap gap-2 mt-auto pt-2">
-								<span v-if="place.mounain_range"
-									class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">
-									{{ place.mounain_range }}
-								</span>
+						<!-- Content Area -->
+						<div class="flex-1 p-6">
+							<div class="flex justify-between items-start h-full">
+								<div class="flex-1">
+									<div class="mb-3">
+										<h3
+											class="mb-2 font-bold text-gray-900 dark:group-hover:text-indigo-400 dark:text-white group-hover:text-indigo-600 text-xl transition-colors duration-200">
+											{{ place.name }}
+										</h3>
+										<div
+											class="flex flex-wrap items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+											<span v-if="place.nearest_city" class="flex items-center">
+												📍 Near {{ place.nearest_city }}
+											</span>
+											<span v-if="place.mounain_range" class="flex items-center">
+												🏔️ {{ place.mounain_range }}
+											</span>
+										</div>
+									</div>
+
+									<p class="mb-4 text-gray-600 dark:text-gray-300 line-clamp-3 leading-relaxed">
+										{{ place.description || "Discover this amazing destination with live webcam views and stunning mountain scenery." }}
+									</p>
+
+									<!-- Action Row -->
+									<div class="flex justify-between items-center">
+										<div class="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm">
+											<span class="flex items-center">
+												📹 Live webcam available
+											</span>
+										</div>
+										<div
+											class="font-medium text-indigo-600 dark:text-indigo-400 transition-transform group-hover:translate-x-1 duration-200">
+											View details →
+										</div>
+									</div>
+								</div>
+
+								<!-- Favorite Button -->
+								<button @click.stop.prevent="toggleFavorite(place.id)"
+									class="hover:bg-gray-100 dark:hover:bg-gray-700 ml-4 p-3 rounded-full hover:scale-110 transition-all duration-200"
+									:aria-label="isFavorite(place.id) ? 'Remove from favorites' : 'Add to favorites'">
+									<HeartIcon :class="[
+										'w-6 h-6 transition-colors duration-200',
+										isFavorite(place.id)
+											? 'text-red-500 fill-current'
+											: 'text-gray-400 dark:text-gray-500 hover:text-red-500'
+									]" />
+								</button>
 							</div>
 						</div>
 					</router-link>
@@ -345,7 +468,6 @@ export default {
 			if (favoritesFilter.value) count++;
 			if (selectedCountry.value) count++;
 			if (selectedMountainRange.value) count++;
-			if (sortOption.value !== 'name-asc') count++;
 			return count;
 		});
 
@@ -464,25 +586,90 @@ export default {
 
 <style scoped>
 .filter-select {
-	@apply dark:bg-gray-800 p-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full dark:text-gray-100;
+	width: 100%;
+	padding: 0.5rem 1rem;
+	background-color: rgb(249 250 251);
+	border: 1px solid rgb(209 213 219);
+	border-radius: 0.75rem;
+	outline: none;
+	transition: all 0.2s;
+	color: rgb(17 24 39);
 }
 
-.slide-down-enter-active,
-.slide-down-leave-active {
-	transition: all 0.3s ease;
+.dark .filter-select {
+	background-color: rgb(55 65 81);
+	border-color: rgb(75 85 99);
+	color: rgb(243 244 246);
 }
 
-.slide-down-enter-from,
-.slide-down-leave-to {
-	opacity: 0;
-	transform: translateY(-10px);
+.filter-select:focus {
+	box-shadow: 0 0 0 2px rgb(99 102 241);
+	border-color: transparent;
 }
 
-button {
-	transition: transform 0.2s ease-in-out;
+.filter-select:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
-button:hover {
-	transform: scale(1.05);
+/* Custom animations */
+@keyframes float {
+
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+.float-animation {
+	animation: float 3s ease-in-out infinite;
+}
+
+/* Transitions */
+.transition-all {
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 300ms;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+}
+
+.line-clamp-3 {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+	transform: translateY(-4px);
+}
+
+/* Backdrop blur fallback */
+.backdrop-blur-md {
+	backdrop-filter: blur(12px);
+}
+
+@supports not (backdrop-filter: blur(12px)) {
+	.backdrop-blur-md {
+		background-color: rgba(255, 255, 255, 0.9);
+	}
+
+	.dark .backdrop-blur-md {
+		background-color: rgba(17, 24, 39, 0.9);
+	}
 }
 </style>
