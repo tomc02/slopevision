@@ -33,6 +33,7 @@ const actions = {
         try {
             await AuthService.register(user);
             const userDetail = await AuthService.getUserDetails();
+            await AuthService.refreshCsrfToken();
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
         } catch (error) {
@@ -43,6 +44,7 @@ const actions = {
         try {
             const response = await AuthService.login(user);
             const userDetail = await AuthService.getUserDetails();
+            await AuthService.refreshCsrfToken();
             localStorage.setItem('token', response.data.key);
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
@@ -54,6 +56,7 @@ const actions = {
     async logout({commit}) {
         try {
             await AuthService.logout();
+            await AuthService.refreshCsrfToken();
             commit('SET_USER', null);
             commit('CLEAR_ERROR');
         } catch (error) {
@@ -66,6 +69,7 @@ const actions = {
         if (token) {
             try {
                 const response = await AuthService.getUserDetails();
+                await AuthService.refreshCsrfToken();
                 commit('SET_USER', response.data);
             } catch {
                 localStorage.removeItem('token');

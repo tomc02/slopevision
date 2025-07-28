@@ -32,4 +32,11 @@ export default {
         user.image = null;
         return api.put(AUTH_API_URL + 'user/', user);
     },
+    refreshCsrfToken() {
+        return api.get('/api/csrf/').then(response => {
+            localStorage.setItem('csrfToken', response.data.csrfToken);
+        }).catch(error => {
+            console.error('Error fetching CSRF token:', error);
+        });
+    }
 };
