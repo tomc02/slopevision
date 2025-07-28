@@ -1,20 +1,21 @@
 <template>
-  <div id="app" class="flex flex-col bg-app-light-bg dark:bg-app-dark-bg h-screen dark:text-gray-100">
+  <div id="app"
+    class="flex flex-col bg-gradient-to-br from-gray-50 dark:from-gray-900 via-white dark:via-gray-800 to-gray-100 dark:to-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
     <!-- Navbar Component -->
-    <Navbar/>
+    <Navbar />
 
     <!-- Main Content Area -->
-    <div class="flex-1 bg-app-light-bg dark:bg-app-dark-bg w-full">
+    <main class="flex-1 w-full">
       <!-- Router View for Dynamic Content -->
-      <router-view/>
-    </div>
+      <router-view />
+    </main>
+
 
     <!-- Footer Component -->
-    <footer class="bg-navbar-light-bg dark:bg-navbar-dark-bg p-2 h-10 text-sm text-center">
+    <footer class="bg-navbar-light-bg dark:bg-gray-900/95 p-2 h-10 text-sm text-center">
       <p class="text-secondary-light dark:text-secondary-dark">&copy; 2024 Slope Vision</p>
     </footer>
   </div>
-
 </template>
 
 
@@ -36,4 +37,3 @@ export default {
   },
 };
 </script>
-
