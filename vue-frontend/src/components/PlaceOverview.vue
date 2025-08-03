@@ -3,14 +3,6 @@
 		class="">
 		<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 container">
 			<div class="mb-8">
-				<div class="mb-0 text-center">
-					<h1
-						class="bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4 font-bold text-transparent text-4xl">
-						Discover Places
-					</h1>
-
-				</div>
-
 				<!-- Controls Bar -->
 				<div
 					class="bg-white/80 dark:bg-gray-800/80 shadow-xl backdrop-blur-md px-6 py-4 border border-gray-200 dark:border-gray-700 rounded-2xl">
