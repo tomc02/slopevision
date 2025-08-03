@@ -23,10 +23,7 @@ export const places = pgTable('rest_api_place', {
     description: text('description'),
     country: varchar('country', { length: 100 }).notNull(),
     nearestCity: varchar('nearest_city', { length: 100 }),
-    mounainRange: varchar('mounain_range', { length: 100 }),
-    firstWebcamId: integer('first_webcam_id').references(() => webcams.id, {
-        onDelete: 'set null',
-    }),
+    mounainRange: varchar('mounain_range', { length: 100 })
 });
 
 // === Webcam ===
