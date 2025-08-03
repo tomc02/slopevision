@@ -1,6 +1,6 @@
 <template>
   <div id="app"
-    class="flex flex-col bg-gradient-to-br from-gray-50 dark:from-gray-900 via-white dark:via-gray-800 to-gray-100 dark:to-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
+    class="flex flex-col bg-gradient-to-br from-app-light-bg dark:from-app-dark-bg to-item-secondary-light dark:to-item-dark-bg min-h-screen text-gray-900 dark:text-gray-100">
     <!-- Navbar Component -->
     <Navbar />
 
