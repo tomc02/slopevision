@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="">
-		<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+		<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 container">
 			<div class="mb-8">
 				<div class="mb-0 text-center">
 					<h1
@@ -151,7 +151,7 @@
 
 			<!-- No Results State -->
 			<div v-if="filteredPlaces.length === 0" class="flex flex-col justify-center items-center py-20">
-				<div v-if="loading" class="text-center">
+				<div v-if="loading" class="flex flex-col items-center text-center">
 					<div class="relative">
 						<div
 							class="border-4 border-indigo-200 dark:border-indigo-800 rounded-full w-16 h-16 animate-spin">
@@ -160,7 +160,7 @@
 							class="top-0 left-0 absolute border-4 border-t-indigo-600 border-transparent rounded-full w-16 h-16 animate-spin">
 						</div>
 					</div>
-					<p class="mt-4 text-gray-600 dark:text-gray-400 text-lg">Loading amazing places...</p>
+					<p class="mt-4 text-gray-600 dark:text-gray-400 text-lg">Loading places...</p>
 				</div>
 				<div v-else class="max-w-md text-center">
 					<div
@@ -268,7 +268,7 @@
 							class="relative bg-gradient-to-br from-gray-200 dark:from-gray-700 to-gray-300 dark:to-gray-800 w-full sm:w-80 aspect-video overflow-hidden">
 							<WebcamVideo :altText="place.name" :url="place.first_webcam_url"
 								style="pointer-events: none"
-								class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+								class="w-full h-full object-cover transition-transform duration-500" />
 
 							<!-- Country Badge -->
 							<div class="top-3 left-3 absolute">
