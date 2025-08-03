@@ -23,13 +23,6 @@ class Place(models.Model):
     country = models.CharField(max_length=100)
     nearest_city = models.CharField(max_length=100, blank=True, null=True)
     mounain_range = models.CharField(max_length=100, blank=True, null=True)
-    first_webcam = models.ForeignKey(
-        'Webcam',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name='first_webcam_place'
-    )
 
     def __str__(self):
         return self.name

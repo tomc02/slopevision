@@ -11,15 +11,20 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'latitude', 'longitude', 'description', 'first_webcam_url',
-                  'country', 'nearest_city', 'mounain_range', 'latest_webcam_history']
+        fields = ['id', 'name', 'latitude', 'longitude', 'description',
+                  'first_webcam_url', 'country', 'nearest_city', 'mounain_range',
+                  'latest_webcam_history']
 
     def get_first_webcam_url(self, obj):
-        return obj.first_webcam.url if obj.first_webcam else ''
+        webcams = list(obj.webcams.all())  # Uses prefetch cache
+        return webcams[0].source_url if webcams else None
 
     def get_latest_webcam_history(self, obj):
-        latest_history = obj.first_webcam.latest_history if obj.first_webcam else None
-        return latest_history.url if latest_history else None
+        webcams = list(obj.webcams.all())
+        if webcams:
+            latest_history = webcams[0].latest_history  # Already prefetched
+            return latest_history.url if latest_history else None
+        return None
 
 
 class WebcamSerializer(serializers.ModelSerializer):

@@ -27,7 +27,9 @@ from django.db.models import Prefetch
 )
 class PlaceViewSet(viewsets.ModelViewSet):
     serializer_class = PlaceSerializer
-    queryset = Place.objects.all().prefetch_related('webcams')
+    queryset = Place.objects.all().prefetch_related(
+        Prefetch('webcams', queryset=Webcam.objects.select_related('latest_history').order_by('id'))
+    )
 
     @extend_schema(
         description="Retrieve all webcams associated with a specific place.",
@@ -35,11 +37,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=['get'], url_path='webcams')
     def get_webcams(self, request, pk=None):
-        """
-        Custom action to get webcams associated with a specific place.
-        """
-        place = self.get_object()  # Get the place by its `pk`
-        webcams = place.webcams.all()  # Get all webcams for that place
+        place = self.get_object()
+        webcams = place.webcams.all()
         return Response(WebcamSerializer(webcams, many=True).data)
 
 
