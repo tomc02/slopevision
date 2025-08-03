@@ -168,7 +168,7 @@
           </router-link>
 
           <!-- Historical Data -->
-          <router-link
+          <router-link v-if="!isAuthenticated"
             :to="isAuthenticated ? '/live-webcams' : '/register'"
             class="group relative bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl p-8 border border-gray-100 dark:border-gray-700 rounded-2xl overflow-hidden transition-all hover:-translate-y-2 duration-300 transform"
           >
