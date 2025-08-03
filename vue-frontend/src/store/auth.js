@@ -17,7 +17,7 @@ const mutations = {
     SET_ERROR(state, errors) {
         if (errors && typeof errors === 'object') {
             state.errorMessage = Object.entries(errors)
-                .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                .map(([field, messages]) => `${field != 'non_field_errors' ? field : 'Error'}: ${messages.join(', ')}`)
                 .join('\n');
         } else {
             state.errorMessage = 'An unexpected error occurred.';
@@ -37,7 +37,8 @@ const actions = {
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
         } catch (error) {
-            commit('SET_ERROR', error.response.key);
+            commit('SET_ERROR', error.response.data);
+            throw error;
         }
     },
     async login({commit}, user) {
