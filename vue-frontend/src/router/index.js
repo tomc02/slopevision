@@ -10,6 +10,7 @@ import AccessDenied from "@/views/AccessDenied.vue";
 import UpgradeAccount from "@/views/UpgradeAccount.vue";
 import PaymentPage from "@/views/PaymentPage.vue";
 import LogoutView from "@/views/LogoutView.vue";
+import AboutView from "@/views/AboutView.vue";
 import store from '../store';
 import MapView from "@/views/MapView.vue";
 const routes = [
@@ -18,6 +19,12 @@ const routes = [
         name: "Home",
         component: Home,
         meta: {title: "Slope Vision", requiresAuth: false, requiresPremium: false}
+    },
+    {
+        path: "/about",
+        name: "About",
+        component: AboutView,
+        meta: {title: "About - Slope Vision", requiresAuth: false, requiresPremium: false}
     },
     {
         path: "/live-webcams",
