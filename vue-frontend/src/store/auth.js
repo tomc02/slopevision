@@ -17,7 +17,7 @@ const mutations = {
     SET_ERROR(state, errors) {
         if (errors && typeof errors === 'object') {
             state.errorMessage = Object.entries(errors)
-                .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                .map(([field, messages]) => `${field != 'non_field_errors' ? field : 'Error'}: ${messages.join(', ')}`)
                 .join('\n');
         } else {
             state.errorMessage = 'An unexpected error occurred.';
@@ -33,16 +33,19 @@ const actions = {
         try {
             await AuthService.register(user);
             const userDetail = await AuthService.getUserDetails();
+            await AuthService.refreshCsrfToken();
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
         } catch (error) {
-            commit('SET_ERROR', error.response.key);
+            commit('SET_ERROR', error.response.data);
+            throw error;
         }
     },
     async login({commit}, user) {
         try {
             const response = await AuthService.login(user);
             const userDetail = await AuthService.getUserDetails();
+            await AuthService.refreshCsrfToken();
             localStorage.setItem('token', response.data.key);
             commit('SET_USER', userDetail.data);
             commit('CLEAR_ERROR');
@@ -54,6 +57,7 @@ const actions = {
     async logout({commit}) {
         try {
             await AuthService.logout();
+            await AuthService.refreshCsrfToken();
             commit('SET_USER', null);
             commit('CLEAR_ERROR');
         } catch (error) {
@@ -66,6 +70,7 @@ const actions = {
         if (token) {
             try {
                 const response = await AuthService.getUserDetails();
+                await AuthService.refreshCsrfToken();
                 commit('SET_USER', response.data);
             } catch {
                 localStorage.removeItem('token');

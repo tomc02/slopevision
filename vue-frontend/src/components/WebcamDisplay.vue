@@ -9,7 +9,7 @@
     </div>
 
     <!-- Main Content -->
-    <div v-else class="mx-4 w-full max-w-[94%]">
+    <div v-else class="mx-4 pt-6 w-full max-w-[80%]">
       <!-- Webcam Tabs (Desktop) -->
       <div class="hidden md:flex mb-4 border-gray-200 dark:border-gray-700 border-b">
         <button v-for="(webcam, index) in webcams" :key="webcam.id" @click="switchWebcam(index)"
@@ -349,6 +349,7 @@ export default {
       } finally {
         if (thisFetchToken === historyFetchToken.value) {
           historyLoading.value = false;
+          setHistoryPanelHeight();
         }
       }
     };
