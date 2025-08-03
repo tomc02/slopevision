@@ -27,7 +27,7 @@
                 </div>
                 <div class="-right-2 -bottom-2 absolute">
                   <span class="inline-flex items-center px-3 py-1 rounded-full font-medium text-xs"
-                        :class="userProfile.accountType === 'Premium' ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'">
+                        :class="userProfile.accountType === 'Premium' ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'">
                     {{ userProfile.accountType }}
                   </span>
                 </div>
@@ -50,8 +50,8 @@
             <div class="gap-6 grid md:grid-cols-2 mb-8">
               <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
                 <div class="flex items-center space-x-3">
-                  <div class="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                    <UserIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div class="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-lg">
+                    <UserIcon class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div>
                     <p class="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide">Username</p>
@@ -77,14 +77,14 @@
             <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-3 sm:space-y-0">
               <router-link
                 to="/profile/edit"
-                class="flex-1 bg-gradient-to-r from-indigo-600 hover:from-indigo-500 to-purple-600 hover:to-purple-500 px-6 py-3 rounded-xl font-semibold text-white text-center hover:scale-105 transition-all duration-200 transform"
+                class="flex-1 bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-xl font-semibold text-white text-center hover:scale-105 transition-all duration-200 transform"
               >
                 <PencilIcon class="inline mr-2 w-5 h-5" />
                 Edit Profile
               </router-link>
               <button
                 @click="logout"
-                class="flex-1 bg-gradient-to-r from-red-500 hover:from-red-400 to-pink-500 hover:to-pink-400 px-6 py-3 rounded-xl font-semibold text-white hover:scale-105 transition-all duration-200 transform"
+                class="flex-1 bg-red-500 hover:bg-red-400 px-6 py-3 rounded-xl font-semibold text-white hover:scale-105 transition-all duration-200 transform"
               >
                 <ArrowRightOnRectangleIcon class="inline mr-2 w-5 h-5" />
                 Logout
@@ -97,7 +97,7 @@
         <div class="lg:col-span-1">
           <div class="bg-white dark:bg-gray-800 shadow-xl p-6 border border-gray-200 dark:border-gray-700 rounded-2xl h-fit">
             <div class="mb-6 text-center">
-              <div class="flex justify-center items-center bg-gradient-to-r from-indigo-500 to-purple-600 mx-auto mb-4 rounded-full w-16 h-16">
+              <div class="flex justify-center items-center bg-indigo-600 mx-auto mb-4 rounded-full w-16 h-16">
                 <CreditCardIcon class="w-8 h-8 text-white" />
               </div>
               <h3 class="mb-2 font-bold text-primary-light dark:text-primary-dark text-xl">
@@ -138,17 +138,17 @@
                 <router-link
                   v-if="userProfile.accountType === 'Free'"
                   to="/upgrade-account"
-                  class="block bg-gradient-to-r from-yellow-400 hover:from-yellow-300 to-orange-500 hover:to-orange-400 px-4 py-3 rounded-xl w-full font-semibold text-white text-center hover:scale-105 transition-all duration-200 transform"
+                  class="block bg-yellow-500 hover:bg-yellow-400 px-4 py-3 rounded-xl w-full font-semibold text-white text-center hover:scale-105 transition-all duration-200 transform"
                 >
                   <StarIcon class="inline mr-2 w-5 h-5" />
                   Upgrade to Premium
                 </router-link>
                 
                 <div v-else class="space-y-2">
-                  <button class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500 px-4 py-3 rounded-xl w-full font-medium text-gray-700 dark:text-gray-300 transition-colors duration-200">
+                  <button class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 px-4 py-3 rounded-xl w-full font-medium text-gray-700 dark:text-gray-300 transition-colors duration-200">
                     Manage Subscription
                   </button>
-                  <button class="bg-red-100 hover:bg-red-200 dark:bg-red-600 dark:hover:bg-red-500 px-4 py-2 rounded-xl w-full font-medium text-white text-sm transition-colors duration-200">
+                  <button class="bg-red-500 hover:bg-red-400 px-4 py-2 rounded-xl w-full font-medium text-white text-sm transition-colors duration-200">
                     Cancel Subscription
                   </button>
                 </div>
