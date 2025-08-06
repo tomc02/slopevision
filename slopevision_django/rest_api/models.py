@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
         ('free', 'Free'),
         ('premium', 'Premium'),
     )
-    account_type = models.CharField(max_length=10, choices=ACCOUNT_TYPE_CHOICES, default='free')
+    account_type = models.CharField(max_length=10, choices=ACCOUNT_TYPE_CHOICES, default='premuim')
     favorite_places = models.ManyToManyField('Place', blank=True, related_name='favorited_by')
 
 
