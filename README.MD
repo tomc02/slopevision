@@ -40,7 +40,7 @@ SlopeVision is a comprehensive ski resort webcam aggregation platform that provi
 
 ## 🌐 **Live Demo**
 
-🚀 **Try SlopeVision now**: [https://slopevision-608659285974.us-east1.run.app/](https://slopevision-608659285974.us-east1.run.app/)
+🚀 **Try SlopeVision now**: [https://slopevision-608659285974.us-east1.run.app/](https://slopevision-608659285974.us-east1.run.app/) (Note: The live demo may take a moment to start.)
 
 Experience the full functionality of SlopeVision with the live deployment. Browse webcams from ski resorts worldwide, explore the interactive map, and see real-time snow conditions!
 
