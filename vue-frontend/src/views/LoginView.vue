@@ -108,7 +108,7 @@
           <!-- Register Link -->
           <router-link
             to="/register"
-            class="block bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-3 rounded-xl w-full font-medium text-gray-700 dark:text-gray-300 text-sm text-center transition-all duration-200"
+            class="block bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-3 rounded-xl w-full font-medium text-gray-700 dark:text-gray-300 text-sm text-center transition-all duration-200"
           >
             <UserPlusIcon class="inline mr-2 w-4 h-4" />
             Create New Account

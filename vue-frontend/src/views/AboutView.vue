@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-900 min-h-screen">
+  <div class="dark:bg-gray-900 min-h-screen">
     <!-- Floating Snow Animation -->
     <div class="snowflakes" aria-hidden="true">
       <div class="dark:text-white snowflake">❅</div>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-blue-50 dark:from-gray-900 via-white dark:via-gray-800 to-indigo-50 dark:to-gray-900 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-blue-300 dark:from-gray-900 dark:via-gray-800 to-gray-200 dark:to-gray-900 overflow-hidden">
       <div class="absolute inset-0 bg-white/50 dark:bg-gray-900/50"></div>
       <div class="relative mx-auto px-4 sm:px-6 lg:px-8 py-32 max-w-7xl">
         <div class="space-y-8 text-center">
@@ -52,7 +52,7 @@
     </section>
 
     <!-- Mission Section -->
-    <section class="bg-gray-50 dark:bg-gray-800 py-24">
+    <section class="bg-gray-100 dark:bg-gray-800 py-24">
       <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div class="items-center gap-16 grid lg:grid-cols-2">
           <div class="space-y-8">
@@ -104,7 +104,7 @@
     </section>
 
     <!-- Features Grid -->
-    <section class="bg-white dark:bg-gray-900 py-24">
+    <section class="bg-gray-200 dark:bg-gray-900 py-24">
       <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div class="mb-16 text-center">
           <div
@@ -200,7 +200,7 @@
     </section>
 
     <!-- Team Section -->
-    <section class="bg-gray-50 dark:bg-gray-800 py-24">
+    <section class="bg-gray-100 dark:bg-gray-800 py-24">
       <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div class="mb-16 text-center">
           <div

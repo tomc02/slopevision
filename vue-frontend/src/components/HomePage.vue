@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-gradient-to-br from-blue-50 dark:from-gray-900 via-white dark:via-gray-800 to-indigo-50 dark:to-gray-900 min-h-screen">
+  <div class="">
     <!-- Hero Section -->
-    <header class="relative overflow-hidden">
+    <header class="relative bg-gradient-to-br from-blue-50 dark:from-gray-900 via-white dark:via-gray-800 to-indigo-50 dark:to-gray-900 overflow-hidden">
       <!-- Background Elements -->
       <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 dark:from-blue-900/20 to-indigo-600/10 dark:to-indigo-900/20"></div>
       <div class="top-10 left-10 absolute bg-blue-200/30 dark:bg-blue-800/30 blur-xl rounded-full w-32 h-32"></div>

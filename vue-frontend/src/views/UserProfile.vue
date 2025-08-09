@@ -14,7 +14,7 @@
       <div class="gap-8 grid lg:grid-cols-3">
         <!-- Profile Card -->
         <div class="lg:col-span-2">
-          <div class="bg-white dark:bg-gray-800 shadow-xl p-8 border border-gray-200 dark:border-gray-700 rounded-2xl">
+          <div class="bg-gray-100 dark:bg-gray-800 shadow-xl p-8 border border-gray-200 dark:border-gray-700 rounded-2xl">
             <!-- Profile Header -->
             <div class="flex sm:flex-row flex-col items-center sm:items-start sm:space-x-6 space-y-4 sm:space-y-0 mb-8">
               <div class="relative">
@@ -48,9 +48,9 @@
 
             <!-- Profile Details Grid -->
             <div class="gap-6 grid md:grid-cols-2 mb-8">
-              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+              <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-xl">
                 <div class="flex items-center space-x-3">
-                  <div class="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-lg">
+                  <div class="bg-indigo-200 dark:bg-indigo-900 p-2 rounded-lg">
                     <UserIcon class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div>
@@ -60,9 +60,9 @@
                 </div>
               </div>
 
-              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+              <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-xl">
                 <div class="flex items-center space-x-3">
-                  <div class="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
+                  <div class="bg-green-200 dark:bg-green-900 p-2 rounded-lg">
                     <CalendarDaysIcon class="w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
@@ -95,7 +95,7 @@
 
         <!-- Subscription Card -->
         <div class="lg:col-span-1">
-          <div class="bg-white dark:bg-gray-800 shadow-xl p-6 border border-gray-200 dark:border-gray-700 rounded-2xl h-fit">
+          <div class="bg-gray-100 dark:bg-gray-800 shadow-xl p-6 border border-gray-200 dark:border-gray-700 rounded-2xl h-fit">
             <div class="mb-6 text-center">
               <div class="flex justify-center items-center bg-indigo-600 mx-auto mb-4 rounded-full w-16 h-16">
                 <CreditCardIcon class="w-8 h-8 text-white" />
@@ -107,7 +107,7 @@
 
             <div class="space-y-4">
               <!-- Current Plan -->
-              <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+              <div class="bg-gray-200 dark:bg-gray-700 p-4 rounded-xl">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-gray-500 dark:text-gray-400 text-sm">Current Plan</span>
                   <span class="font-semibold text-lg"
@@ -118,7 +118,7 @@
               </div>
 
               <!-- Next Payment (only for Premium) -->
-              <div v-if="userProfile.accountType === 'Premium'" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+              <div v-if="userProfile.accountType === 'Premium'" class="bg-gray-200 dark:bg-gray-700 p-4 rounded-xl">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-gray-500 dark:text-gray-400 text-sm">Next Payment</span>
                   <span class="font-semibold text-primary-light dark:text-primary-dark">

@@ -121,7 +121,7 @@
                     <p class="text-gray-500 dark:text-gray-400 text-xs">Signed in</p>
                   </div>
                   <router-link 
-                    class="flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
+                    class="flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
                     to="/profile" 
                     @click="closeUserMenu"
                   >
@@ -129,7 +129,7 @@
                     Profile Settings
                   </router-link>
                   <button 
-                    class="flex items-center hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-3 w-full text-red-600 dark:text-red-400 text-sm transition-colors duration-200"
+                    class="flex items-center hover:bg-red-200 dark:hover:bg-red-900/20 px-4 py-3 w-full text-red-600 dark:text-red-400 text-sm transition-colors duration-200"
                     @click="logout"
                   >
                     <svg class="mr-3 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +140,7 @@
                 </template>
                 <template v-else>
                   <router-link 
-                    class="flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
+                    class="flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
                     to="/login" 
                     @click="closeUserMenu"
                   >
@@ -150,7 +150,7 @@
                     Sign In
                   </router-link>
                   <router-link 
-                    class="flex items-center hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
+                    class="flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-3 text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-sm transition-colors duration-200"
                     to="/register" 
                     @click="closeUserMenu"
                   >
