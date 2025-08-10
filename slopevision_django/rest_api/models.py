@@ -79,6 +79,8 @@ class Webcam(models.Model):
     null=True,
     related_name='latest_history_webcam'
     )
+    
+    is_active = models.BooleanField(default=True, help_text="Indicates if the webcam is currently active or not.")
 
     @property
     def url(self):

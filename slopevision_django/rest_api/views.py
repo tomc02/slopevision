@@ -28,7 +28,7 @@ from django.db.models import Prefetch
 class PlaceViewSet(viewsets.ModelViewSet):
     serializer_class = PlaceSerializer
     queryset = Place.objects.all().prefetch_related(
-        Prefetch('webcams', queryset=Webcam.objects.select_related('latest_history').order_by('id'))
+        Prefetch('webcams', queryset=Webcam.objects.select_related('latest_history').order_by('id').filter(is_active=True))
     )
 
     @extend_schema(
@@ -53,7 +53,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
     ),
 )
 class WebcamViewSet(viewsets.ModelViewSet):
-    queryset = Webcam.objects.all()
+    queryset = Webcam.objects.all().filter(is_active=True)
     serializer_class = WebcamSerializer
 
     @extend_schema(
