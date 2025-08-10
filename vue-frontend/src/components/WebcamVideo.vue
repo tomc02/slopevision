@@ -2,7 +2,7 @@
   <div>
     <template v-if="isIframeUrl">
       <iframe
-        :src="url"
+        :src="computedUrl"
         allow="autoplay; fullscreen"
         allowfullscreen
         class="w-full aspect-video"
@@ -12,7 +12,7 @@
 
     <template v-else-if="isVideoUrl">
       <video
-        :src="url"
+        :src="computedUrl"
         autoplay
         :controls="controls"
         loop
@@ -23,7 +23,7 @@
 
     <template v-else>
       <img
-        :src="url"
+        :src="computedUrl"
         :alt="altText"
         class="w-full object-cover aspect-video"
       />
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { API_URL } from '@/config';
 export default {
   props: {
     url: {
@@ -52,6 +53,14 @@ export default {
       isVideoUrl: false,
       isIframeUrl: false
     };
+  },
+  computed: {
+    computedUrl() {
+      if (this.url.includes('meteo.hzs.sk')) {
+        return `${API_URL}/api/proxy-image/?url=${encodeURIComponent(this.url)}`;
+      }
+      return this.url;
+    }
   },
   methods: {
     isVideo(url) {

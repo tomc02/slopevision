@@ -5,7 +5,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
-from rest_api.views import PlaceViewSet, WebcamViewSet, WebcamHistoryViewSet, CustomUserDetailsView, get_csrf_token, AddFavoritePlaceView, RemoveFavoritePlaceView, FetchWebcamDataView, SaveHistoryView
+from rest_api.views import PlaceViewSet, WebcamViewSet, WebcamHistoryViewSet, CustomUserDetailsView, get_csrf_token, AddFavoritePlaceView, RemoveFavoritePlaceView, FetchWebcamDataView, SaveHistoryView, proxy_image
 
 # Create the router
 router = DefaultRouter()
@@ -25,6 +25,7 @@ urlpatterns = [path('admin/', admin.site.urls), path('api/', include(router.urls
     path('api/csrf/', get_csrf_token, name='get_csrf_token'),
     path('api/fetch-webcam-data/', FetchWebcamDataView.as_view(), name='fetch-webcam-data'),
     path('api/save-history/', SaveHistoryView.as_view(), name='save-history'),
+    path('api/proxy-image/', proxy_image, name='proxy-image')
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

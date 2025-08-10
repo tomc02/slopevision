@@ -8,12 +8,17 @@ from .serializers import PlaceSerializer, WebcamSerializer, WebcamHistorySeriali
 from dj_rest_auth.views import UserDetailsView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CustomUserSerializer
-from django.http import JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from .management.commands import fetch_video_urls, fetch_hzs_images, save_history
-import threading
 from django.db.models import Prefetch
+import requests
+import urllib.parse
+import mimetypes
+from django.http import HttpResponse, HttpResponseBadRequest
+
+ALLOWED_PROXY_DOMAINS = ['meteo.hzs.sk'] 
 
 @extend_schema_view(
     list=extend_schema(
@@ -132,6 +137,35 @@ def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
 
+def proxy_image(request):
+    url = request.GET.get("url")
+    if not url:
+        return HttpResponseBadRequest("Missing 'url' parameter.")
+
+    # Check if the URL is allowed
+    if not any(domain in url for domain in ALLOWED_PROXY_DOMAINS):
+        return HttpResponseForbidden("URL is not allowed.")
+
+    try:
+        # Decode URL if it's URL-encoded
+        url = urllib.parse.unquote(url)
+
+        # Fetch image while ignoring SSL certificate errors
+        resp = requests.get(url, verify=False, stream=True, timeout=10)
+        resp.raise_for_status()
+
+        # Guess content type from headers or file extension
+        content_type = resp.headers.get("Content-Type")
+        if not content_type:
+            content_type, _ = mimetypes.guess_type(url)
+            if not content_type:
+                content_type = "application/octet-stream"
+
+        # Return image data
+        return HttpResponse(resp.content, content_type=content_type)
+
+    except Exception as e:
+        return HttpResponseBadRequest(f"Error fetching image: {e}")
 
 class AddFavoritePlaceView(APIView):
     permission_classes = [IsAuthenticated]
