@@ -8,11 +8,9 @@ const state = {
 
 const mutations = {
     SET_USER(state, user) {
-        console.log('SET_USER', user);
         state.user = user;
         state.isAuthenticated = !!user;
         state.isPremium = user?.account_type !== 'free';
-        console.log('state.isPremium', state.isPremium);
     },
     SET_ERROR(state, errors) {
         if (errors && typeof errors === 'object') {
